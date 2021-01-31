@@ -1,6 +1,7 @@
 spring:
   datasource:
     url: jdbc:h2:mem:default
-  data:
-    rest:
-      base-path: /api
+  h2:
+    console:
+      enabled: true
+      path: /h2console/
