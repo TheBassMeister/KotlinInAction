@@ -1,19 +1,23 @@
 package com.bassmeister.burgercloud
 
-import com.bassmeister.burgercloud.api.IngredientToModelConverter
+import com.bassmeister.burgercloud.api.converters.IngredientConverter
 import com.bassmeister.burgercloud.controllers.IngredientController
 import com.bassmeister.burgercloud.data.IngredientRepo
 import com.bassmeister.burgercloud.domain.IngredientType
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class IngredientControllerTest(@Autowired val ingredientController: IngredientController,
-                               @Autowired val ingredientRepo: IngredientRepo) {
+class IngredientControllerTest() {
+
+    @Autowired
+    private lateinit var ingredientController: IngredientController
+    @Autowired
+    private lateinit var ingredientRepo:IngredientRepo
+
 
     @Test
     fun `Load All Ingredients`() {
@@ -29,16 +33,16 @@ class IngredientControllerTest(@Autowired val ingredientController: IngredientCo
         assertNotNull(sauces.body)
         val result=sauces.body
         assertEquals(2,result!!.count())
-        var ingredientsAsModels= IngredientToModelConverter.convertIngredientList(ingredientRepo.getIngredientByType(IngredientType.SAUCE))
+        var ingredientsAsModels= IngredientConverter.convertIngredientList(ingredientRepo.getIngredientByType(IngredientType.SAUCE))
         assertTrue(result!!.containsAll(ingredientsAsModels), "Did not load all sauces")
         ingredientsAsModels.forEach{ model ->
             assertTrue(model.hasLinks())
             var link=model.getLink("self")
             assertTrue(link.isPresent)
             if(model.id=="KETCHUP"){
-                assertEquals("/ingredients/KETCHUP",link.get().href)
+                assertEquals("/api/ingredients/KETCHUP",link.get().href)
             }else{
-                assertEquals("/ingredients/MAYO",link.get().href)
+                assertEquals("/api/ingredients/MAYO",link.get().href)
             }
         }
 
@@ -50,7 +54,7 @@ class IngredientControllerTest(@Autowired val ingredientController: IngredientCo
         assertEquals( HttpStatus.OK,ingredientResponse.statusCode)
         val ingredient=ingredientResponse.body;
         assertEquals("Bacon", ingredient?.name)
-        assertEquals(IngredientType.OTHER, ingredient?.type)
+        assertEquals(IngredientType.OTHER.name, ingredient?.type)
     }
 
     @Test

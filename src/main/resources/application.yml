@@ -5,3 +5,6 @@ spring:
     console:
       enabled: true
       path: /h2console/
+  data:
+    rest:
+      base-path: /api

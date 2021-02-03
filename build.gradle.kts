@@ -25,12 +25,14 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	runtimeOnly("com.h2database:h2")
+	implementation("org.springframework.boot:spring-boot-starter-data-rest")
+    runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
+	testImplementation("junit:junit:4.12")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.kafka:spring-kafka-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
+
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
@@ -42,4 +44,5 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
+
 
