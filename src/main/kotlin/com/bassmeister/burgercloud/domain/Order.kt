@@ -6,7 +6,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name="Burger_Order")
-class Order (@ManyToOne val customer:User, @OneToMany(targetEntity = Burger::class) val burger:List<Burger>,
+class Order (@ManyToOne val customer:Customer, @OneToMany(targetEntity = Burger::class) val burger:List<Burger>,
              @JsonIgnore val creditCardNumber:String, @JsonIgnore val expDate:String, @JsonIgnore val ccExp:String){
 
     @Id

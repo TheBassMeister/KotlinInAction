@@ -6,8 +6,8 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class User(val password:String, val firstName:String, val lastName:String, val street:String, val city:String,
-           val state:String, val zip:String, val phoneNumber:String)
+class Customer(val password:String, val firstName:String, val lastName:String, val street:String, val city:String,
+               val state:String, val zip:String, val phoneNumber:String)
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

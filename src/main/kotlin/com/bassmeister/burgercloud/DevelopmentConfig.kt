@@ -8,13 +8,14 @@ import com.bassmeister.burgercloud.domain.*
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 class DevelopmentConfig {
 
     @Bean
     fun dataLoader(ingredientRepo:IngredientRepo, userRepo:UserRepository, burgerRepo:BurgerRepo,
-    orderRepo: OrderRepo): CommandLineRunner {
+    orderRepo: OrderRepo, pwEncoder: PasswordEncoder): CommandLineRunner {
         return CommandLineRunner {
             val regBun=Ingredient("REG_BUN", "Regular Bun", IngredientType.BUN)
             val sesBun=Ingredient("SES_BUN", "Sesame Bun", IngredientType.BUN)
@@ -29,10 +30,10 @@ class DevelopmentConfig {
             ingredientRepo.saveAll(listOf(regBun,sesBun,noGlut,ketchup,mayo,letc, toma, bacon,
             pickles, cheese))
 
-            val burglar= User("NotEncoded","Ham", "Burglar",
+            val burglar= Customer(pwEncoder.encode("BurglarHam"),"Ham", "Burglar",
                 "123 Fries Avenue", "Big Mac", "TX",
                 "76227", "123-123-1234")
-            val ronald=User("NotEncoded","Ronald", "Donald",
+            val ronald=Customer(pwEncoder.encode("RonaldMcDonald"),"Ronald", "Donald",
                 "123 Milkshake Boulevard", "Royal TS", "TX",
                 "76227", "123-123-1234")
             userRepo.saveAll(listOf(burglar, ronald))

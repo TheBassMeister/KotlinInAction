@@ -22,7 +22,7 @@ object IngredientConverter {
     fun convertIngredient(ingredient: Ingredient, withLink:Boolean):IngredientModel{
         val ingredientModel=IngredientModel(ingredient.id,ingredient.name,ingredient.type.name)
         if(withLink)
-            ingredientModel.add(Link.of(linkTo(RootController::class.java).toString()).withRel("root"))
+            Converter.addLinkToRestHome(ingredientModel)
         return ingredientModel
     }
 

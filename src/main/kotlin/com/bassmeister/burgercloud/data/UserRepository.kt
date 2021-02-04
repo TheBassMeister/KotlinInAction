@@ -1,9 +1,9 @@
 package com.bassmeister.burgercloud.data
 
-import com.bassmeister.burgercloud.domain.User
+import com.bassmeister.burgercloud.domain.Customer
 import org.springframework.data.repository.CrudRepository
 
-interface UserRepository :CrudRepository<User, Long>{
+interface UserRepository :CrudRepository<Customer, Long>{
 
-    fun getUserByLastName(lastName:String):List<User>
+    fun getUserByLastName(lastName:String):List<Customer>
 }

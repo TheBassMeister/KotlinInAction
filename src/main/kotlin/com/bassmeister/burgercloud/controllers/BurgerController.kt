@@ -3,6 +3,7 @@ package com.bassmeister.burgercloud.controllers
 import com.bassmeister.burgercloud.api.BurgerModel
 import com.bassmeister.burgercloud.api.converters.BurgerConverter
 import com.bassmeister.burgercloud.data.BurgerRepo
+import com.bassmeister.burgercloud.data.OrderRepo
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(path = ["/api/burgers"], produces = ["application/hal+json"])
-class BurgerController(val burgerRepo: BurgerRepo) {
+class BurgerController(val burgerRepo: BurgerRepo, val orderRepo: OrderRepo) {
 
     @GetMapping
     fun getBurgers():ResponseEntity<List<BurgerModel>>{
