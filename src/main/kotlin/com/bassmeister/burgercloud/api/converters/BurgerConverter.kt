@@ -23,7 +23,7 @@ object BurgerConverter {
         var model=BurgerModel(burger.id, burger.name, burger.createdAt,
             IngredientConverter.convertIngredientList(burger.ingredients))
         if(withLink)
-            model.add(Link.of(linkTo(RootController::class.java).toString()).withRel("root"))
+            Converter.addLinkToRestHome(model)
 
         return model;
     }

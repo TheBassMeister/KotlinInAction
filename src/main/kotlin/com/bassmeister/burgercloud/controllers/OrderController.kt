@@ -1,7 +1,7 @@
 package com.bassmeister.burgercloud.controllers
 
 import com.bassmeister.burgercloud.api.converters.OrderConverter
-import com.bassmeister.burgercloud.api.converters.OrderModel
+import com.bassmeister.burgercloud.api.OrderModel
 import com.bassmeister.burgercloud.data.OrderRepo
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

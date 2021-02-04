@@ -1,6 +1,6 @@
 package com.bassmeister.burgercloud
 
-import com.bassmeister.burgercloud.controllers.UserController
+import com.bassmeister.burgercloud.controllers.CustomerController
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -10,21 +10,18 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UserControllerTest() {
-
-    @Autowired
-    private lateinit var controller:UserController
+class CustomerControllerTest(@Autowired var controller:CustomerController) {
 
     @Test
     fun `Load All Users`() {
-        val users=controller!!.getUsers()
+        val users=controller.getCustomers()
         Assertions.assertEquals(HttpStatus.OK, users.statusCode)
         Assertions.assertEquals(2, users.body?.count())
     }
 
     @Test
     fun `Load Hamburglar`(){
-        val user=controller?.getUsersByLastName("Burglar")
+        val user=controller.getUsersByLastName("Burglar")
         if(user!=null) {
             assertNotNull(user.body)
             assertEquals(1, user.body?.size)
@@ -32,6 +29,17 @@ class UserControllerTest() {
             assertEquals("Ham", burglar?.firstName)
             assertEquals("Burglar", burglar?.lastName)
             assertEquals("Big Mac", burglar?.city)
+        }
+    }
+
+    @Test
+    fun `Get Hamburglars Orders`(){
+        val orders=controller.getOrders(1)
+        assertNotNull(orders.body, "Could not find Hamburglar's orders")
+        if(orders.body!=null){
+            assertEquals(1, orders.body?.size)
+            val order= orders.body!![0]
+            assertEquals("Standard Burger", order.burgers[0].name)
         }
     }
 
