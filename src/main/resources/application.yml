@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:default
+  h2:
+    console:
+      enabled: true
+      path: /h2console/
+  data:
+    rest:
+      base-path: /api
