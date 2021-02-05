@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CustomerControllerTest(@Autowired var controller:CustomerController) {
+class CustomerControllerTest(@Autowired val controller:CustomerController) {
 
     @Test
     fun `Load All Users`() {
