@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class IngredientControllerTest() {
+class IngredientControllerTest {
 
     @Autowired
     private lateinit var ingredientController: IngredientController

@@ -3,7 +3,7 @@ package com.bassmeister.burgercloud
 import com.bassmeister.burgercloud.data.BurgerRepo
 import com.bassmeister.burgercloud.data.IngredientRepo
 import com.bassmeister.burgercloud.data.OrderRepo
-import com.bassmeister.burgercloud.data.UserRepository
+import com.bassmeister.burgercloud.data.CustomerRepository
 import com.bassmeister.burgercloud.domain.*
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 class DevelopmentConfig {
 
     @Bean
-    fun dataLoader(ingredientRepo:IngredientRepo, userRepo:UserRepository, burgerRepo:BurgerRepo,
-    orderRepo: OrderRepo, pwEncoder: PasswordEncoder): CommandLineRunner {
+    fun dataLoader(ingredientRepo:IngredientRepo, userRepo:CustomerRepository, burgerRepo:BurgerRepo,
+                   orderRepo: OrderRepo, pwEncoder: PasswordEncoder): CommandLineRunner {
         return CommandLineRunner {
             val regBun=Ingredient("REG_BUN", "Regular Bun", IngredientType.BUN)
             val sesBun=Ingredient("SES_BUN", "Sesame Bun", IngredientType.BUN)
