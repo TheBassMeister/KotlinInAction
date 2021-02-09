@@ -5,7 +5,7 @@ import com.bassmeister.burgercloud.api.CustomerModel
 import com.bassmeister.burgercloud.api.converters.OrderConverter
 import com.bassmeister.burgercloud.api.converters.CustomerConverter
 import com.bassmeister.burgercloud.data.OrderRepo
-import com.bassmeister.burgercloud.data.UserRepository
+import com.bassmeister.burgercloud.data.CustomerRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,7 +14,7 @@ import javax.transaction.Transactional
 
 @RestController
 @RequestMapping(path = ["/api/customers"], produces = ["application/hal+json"])
-class CustomerController(val repo:UserRepository, val orderRepo: OrderRepo) {
+class CustomerController(val repo:CustomerRepository, val orderRepo: OrderRepo) {
 
     fun getCustomers():ResponseEntity<List<CustomerModel>> {
         var userList= CustomerConverter.convertUserList(repo.findAll())

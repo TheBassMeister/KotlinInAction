@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CustomerControllerTest(@Autowired var controller:CustomerController) {
+class CustomerControllerTest(@Autowired val controller:CustomerController) {
 
     @Test
     fun `Load All Users`() {
@@ -22,7 +22,7 @@ class CustomerControllerTest(@Autowired var controller:CustomerController) {
     @Test
     fun `Load Hamburglar`(){
         val user=controller.getUsersByLastName("Burglar")
-        if(user!=null) {
+        user?.let{
             assertNotNull(user.body)
             assertEquals(1, user.body?.size)
             val burglar = user.body?.get(0)
@@ -36,7 +36,7 @@ class CustomerControllerTest(@Autowired var controller:CustomerController) {
     fun `Get Hamburglars Orders`(){
         val orders=controller.getOrders(1)
         assertNotNull(orders.body, "Could not find Hamburglar's orders")
-        if(orders.body!=null){
+        orders.body?.let{
             assertEquals(1, orders.body?.size)
             val order= orders.body!![0]
             assertEquals("Standard Burger", order.burgers[0].name)

@@ -31,6 +31,7 @@ dependencies {
 	testImplementation("junit:junit:4.12")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 }
 
 

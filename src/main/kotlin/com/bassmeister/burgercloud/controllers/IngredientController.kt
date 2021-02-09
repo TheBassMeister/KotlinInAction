@@ -34,7 +34,7 @@ class IngredientController (val repo: IngredientRepo){
         return  ResponseEntity(mapped, HttpStatus.OK)
     }
 
-    @GetMapping("/customer/{id}")
+    @GetMapping("/{id}")
     fun getIngredientById(@PathVariable id:String):ResponseEntity<IngredientModel>{
        val ingredient=repo.findById(id);
        if(ingredient.isPresent){
