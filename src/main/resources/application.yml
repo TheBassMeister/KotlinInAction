@@ -22,3 +22,10 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+burgercloud:
+  email:
+    host: imap.gmail.com
+    mailbox: INBOX
+    username: burger-in-flow
+    password: 1L0v3BURg3Rs
+    poll-rate: 10000

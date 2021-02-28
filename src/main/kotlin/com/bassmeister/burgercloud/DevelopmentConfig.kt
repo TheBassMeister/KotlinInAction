@@ -6,9 +6,13 @@ import com.bassmeister.burgercloud.data.OrderRepo
 import com.bassmeister.burgercloud.data.CustomerRepository
 import com.bassmeister.burgercloud.domain.*
 import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.JavaMailSenderImpl
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.client.RestTemplate
 
 @Configuration
 class DevelopmentConfig {
@@ -45,6 +49,16 @@ class DevelopmentConfig {
             orderRepo.save(Order(burglar, listOf(standardBurger),"378618187748325", "03/22", "350"))
 
         }
+    }
+
+    @Bean
+    fun restTemplate(builder: RestTemplateBuilder): RestTemplate {
+        return builder.build()
+    }
+
+    @Bean
+    fun mailSender(): JavaMailSender {
+        return JavaMailSenderImpl()
     }
 
 }
