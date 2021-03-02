@@ -24,7 +24,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 burgercloud:
   email:
-    host: imap.gmail.com
+    host: imap.abc.com
     mailbox: INBOX
     username: burger-in-flow
     password: 1L0v3BURg3Rs

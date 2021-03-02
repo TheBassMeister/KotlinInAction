@@ -27,6 +27,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	implementation("org.springframework.boot:spring-boot-starter-integration")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.integration:spring-integration-mail:5.4.3")
 	implementation("javax.mail:javax.mail-api:1.6.2")
 	implementation("com.sun.mail:javax.mail:1.6.2")
@@ -42,7 +43,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
+		freeCompilerArgs = listOf("-Xjsr305=strict", "-Xemit-jvm-type-annotations")
 		jvmTarget = "1.8"
 	}
 }

@@ -6,13 +6,16 @@ import com.bassmeister.burgercloud.api.converters.OrderConverter
 import com.bassmeister.burgercloud.api.converters.CustomerConverter
 import com.bassmeister.burgercloud.data.OrderRepo
 import com.bassmeister.burgercloud.data.CustomerRepository
+import com.bassmeister.burgercloud.domain.Customer
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.transaction.Transactional
+import javax.validation.Valid
 
-@RestController
+@RestController @Validated
 @RequestMapping(path = ["/api/customers"], produces = ["application/hal+json"])
 class CustomerController(val repo:CustomerRepository, val orderRepo: OrderRepo) {
 
@@ -40,6 +43,12 @@ class CustomerController(val repo:CustomerRepository, val orderRepo: OrderRepo) 
             return ResponseEntity(CustomerConverter.convertUserList(users), HttpStatus.OK)
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping(consumes = ["application/json"])
+    fun addNewUser(@Valid @RequestBody customer:Customer):ResponseEntity<CustomerModel>{
+        val newCustomer=repo.save(customer)
+        return ResponseEntity(CustomerConverter.convertUser(newCustomer, true), HttpStatus.CREATED)
     }
 
     @GetMapping("/{id}/orders")
