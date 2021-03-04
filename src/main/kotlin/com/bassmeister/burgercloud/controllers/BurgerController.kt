@@ -4,12 +4,11 @@ import com.bassmeister.burgercloud.api.BurgerModel
 import com.bassmeister.burgercloud.api.converters.BurgerConverter
 import com.bassmeister.burgercloud.data.BurgerRepo
 import com.bassmeister.burgercloud.data.OrderRepo
+import com.bassmeister.burgercloud.domain.Burger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(path = ["/api/burgers"], produces = ["application/hal+json"])
@@ -29,5 +28,11 @@ class BurgerController(val burgerRepo: BurgerRepo, val orderRepo: OrderRepo) {
             return ResponseEntity(BurgerConverter.convertBurger(burger.get(), true), HttpStatus.OK)
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    fun addNewBurger(@RequestBody @Validated burger: Burger):ResponseEntity<BurgerModel>{
+        val newBurger=burgerRepo.save(burger);
+        return ResponseEntity(BurgerConverter.convertBurger(newBurger,true), HttpStatus.CREATED);
     }
 }
