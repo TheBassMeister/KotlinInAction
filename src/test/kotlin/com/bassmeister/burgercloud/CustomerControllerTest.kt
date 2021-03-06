@@ -4,7 +4,6 @@ import com.bassmeister.burgercloud.controllers.CustomerController
 import com.bassmeister.burgercloud.domain.Customer
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,11 +12,16 @@ import javax.validation.ConstraintViolationException
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CustomerControllerTest(@Autowired val controller:CustomerController) {
+    companion object{
+        var nrOfCustomers=2 //Not so gooding style need to rethink
+    }
+
 
     @Test
     fun `Load All Users`() {
         val users=controller.getCustomers()
-        Assertions.assertEquals(HttpStatus.OK, users.statusCode)
+        assertEquals(HttpStatus.OK, users.statusCode)
+        assertEquals(nrOfCustomers, users.body?.size)
     }
 
     @Test
@@ -51,7 +55,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
         val users=controller.getCustomers()
         val beforeCount=users.body?.count()
 
-        val user=controller.addNewUser(createTestCustomer());
+        val user=controller.addNewCustomer(createTestCustomer());
         assertEquals(HttpStatus.CREATED,user.statusCode)
         user.body?.let {
             assertEquals("Test", it.firstName)
@@ -62,6 +66,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
         if (beforeCount != null) {
             Assertions.assertEquals(beforeCount+1, usersAfter.body?.count())
         }
+        nrOfCustomers++
     }
 
 
@@ -74,18 +79,45 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
         testCustomer.lastName=""
 
         try {
-            val user = controller.addNewUser(testCustomer)
+            val user = controller.addNewCustomer(testCustomer)
             fail("User Validation should have failed")
         }catch (ex: ConstraintViolationException){
             ex.message?.let {
-                assertTrue(it.contains("addNewUser.customer.firstName"))
-                assertTrue(it.contains("addNewUser.customer.lastName"))
+                assertTrue(it.contains("addNewCustomer.customer.firstName"))
+                assertTrue(it.contains("addNewCustomer.customer.lastName"))
             }
         }
 
         val usersAfter=controller.getCustomers()
         if (beforeCount != null) {
             Assertions.assertEquals(beforeCount, usersAfter.body?.count())
+        }
+    }
+
+    @Test
+    fun `Delete Customer`(){
+        val toDelete=createTestCustomer()
+        val toDeleteModel=controller.addNewCustomer(toDelete)
+        val allCustomers=controller.getCustomers()
+        allCustomers.body?.let{
+            val beforeSize=it.size
+            val deleteOP= toDeleteModel.body?.id?.let { it1 -> controller.deleteCustomer(it1) }
+            assertEquals(HttpStatus.NO_CONTENT,deleteOP?.statusCode)
+            assertEquals(beforeSize-1, controller.getCustomers().body?.size)
+        }
+    }
+
+    @Test
+    fun `Update Existing Customer`(){
+        val customer=controller.getCustomer(1)
+        val newData=createTestCustomer()
+        val updated=controller.updateCustomer(1, newData)
+        assertEquals(HttpStatus.OK, updated.statusCode)
+        //Test with a fresh load from repo
+        val customerUpdate=controller.getCustomer(1)
+        customerUpdate.body?.let {
+            assertEquals("Test", it.firstName)
+            assertEquals("User", it.lastName)
         }
 
     }

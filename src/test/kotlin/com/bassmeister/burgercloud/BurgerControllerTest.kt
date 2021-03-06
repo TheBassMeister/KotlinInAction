@@ -14,12 +14,16 @@ import javax.validation.ConstraintViolationException
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BurgerControllerTest(@Autowired val controller:BurgerController, @Autowired val ingredientRepo: IngredientRepo) {
+    companion object{
+        var nrOfBurgers=1 //Not so gooding style need to rethink
+    }
+
 
     @Test
     fun `Get All Burgers`() {
         val burgers=controller.getBurgers()
-        Assertions.assertEquals(HttpStatus.OK, burgers.statusCode)
-        println(burgers.body)
+        assertEquals(HttpStatus.OK, burgers.statusCode)
+        assertEquals(nrOfBurgers, burgers.body?.size)
     }
 
     @Test
@@ -45,6 +49,7 @@ class BurgerControllerTest(@Autowired val controller:BurgerController, @Autowire
         if(countBefore!=null) {
             assertEquals((countBefore + 1), countAfter)
         }
+        nrOfBurgers++
     }
 
 

@@ -39,6 +39,6 @@ data class Customer(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id:Long=0L
+    var id:Long=0L
 
 }
