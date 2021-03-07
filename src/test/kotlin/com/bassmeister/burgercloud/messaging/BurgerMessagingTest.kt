@@ -41,7 +41,7 @@ class BurgerMessagingTest(@Autowired val consumer:OrderListener, @Autowired val 
         val burger1Ingredients= listOf(regBun, ketchup,bacon)
         val standardBurger= Burger("Standard Burger",burger1Ingredients)
 
-        val burglar= Customer("BurglarHam","Ham", "Burglar",
+        val burglar= Customer("Ham", "Burglar",
             "123 Fries Avenue", "Big Mac", "TX",
             "76227", "123-123-1234")
 

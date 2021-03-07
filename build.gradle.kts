@@ -27,12 +27,15 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-rest")
 	implementation("org.springframework.boot:spring-boot-starter-integration")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.integration:spring-integration-mail:5.4.3")
 	implementation("javax.mail:javax.mail-api:1.6.2")
 	implementation("com.sun.mail:javax.mail:1.6.2")
-    runtimeOnly("com.h2database:h2")
+	implementation("junit:junit:4.12")
+	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("junit:junit:4.12")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
@@ -42,7 +45,7 @@ dependencies {
 
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
-		freeCompilerArgs = listOf("-Xjsr305=strict")
+		freeCompilerArgs = listOf("-Xjsr305=strict", "-Xemit-jvm-type-annotations")
 		jvmTarget = "1.8"
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.integration.dsl.IntegrationFlows
 import org.springframework.integration.mail.dsl.Mail
 import org.springframework.integration.dsl.Pollers
 import org.springframework.integration.dsl.SourcePollingChannelAdapterSpec
+import java.util.concurrent.TimeUnit
 
 
 @Configuration
@@ -22,7 +23,7 @@ class BurgerOrderEmailIntegration {
                 Mail.imapInboundAdapter(emailProps.getImapUrl())
             ) { e: SourcePollingChannelAdapterSpec ->
                 e.poller(
-                    Pollers.fixedDelay(emailProps.pollRate)
+                    Pollers.fixedDelay(emailProps.pollRate, TimeUnit.HOURS)
                 )
             }
             .transform(emailOrderTransformer)

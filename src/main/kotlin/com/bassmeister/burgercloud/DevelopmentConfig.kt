@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.client.RestTemplate
 
@@ -34,12 +35,14 @@ class DevelopmentConfig {
             ingredientRepo.saveAll(listOf(regBun,sesBun,noGlut,ketchup,mayo,letc, toma, bacon,
             pickles, cheese))
 
-            val burglar= Customer(pwEncoder.encode("BurglarHam"),"Ham", "Burglar",
+            val burglar= Customer("Ham", "Burglar",
                 "123 Fries Avenue", "Big Mac", "TX",
                 "76227", "123-123-1234")
-            val ronald=Customer(pwEncoder.encode("RonaldMcDonald"),"Ronald", "Donald",
+            burglar.password="BurglarHam"
+            val ronald=Customer("Ronald", "Donald",
                 "123 Milkshake Boulevard", "Royal TS", "TX",
                 "76227", "123-123-1234")
+            ronald.password="RonaldMcDonald"
             userRepo.saveAll(listOf(burglar, ronald))
 
             val burger1Ingredients= listOf(regBun, mayo,cheese, pickles)
