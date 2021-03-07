@@ -1,6 +1,7 @@
 package com.bassmeister.burgercloud.controllers
 
 import com.bassmeister.burgercloud.api.BurgerModel
+import com.bassmeister.burgercloud.api.CustomerModel
 import com.bassmeister.burgercloud.api.converters.BurgerConverter
 import com.bassmeister.burgercloud.data.BurgerRepo
 import com.bassmeister.burgercloud.data.OrderRepo
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping(path = ["/api/burgers"], produces = ["application/hal+json"])
-class BurgerController(val burgerRepo: BurgerRepo, val orderRepo: OrderRepo) {
+class BurgerController(private val burgerRepo: BurgerRepo, private val orderRepo: OrderRepo) {
 
     @GetMapping
     fun getBurgers():ResponseEntity<List<BurgerModel>>{
@@ -35,4 +36,13 @@ class BurgerController(val burgerRepo: BurgerRepo, val orderRepo: OrderRepo) {
         val newBurger=burgerRepo.save(burger);
         return ResponseEntity(BurgerConverter.convertBurger(newBurger,true), HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteBurger(@PathVariable id:Long):ResponseEntity<BurgerModel>{
+        burgerRepo.deleteById(id)
+        return ResponseEntity.noContent().build<BurgerModel>()
+    }
+
+    //No PutMapping as updating a burger is not allowed (my design decision).
+    // Customers would have to delete and create a new one
 }

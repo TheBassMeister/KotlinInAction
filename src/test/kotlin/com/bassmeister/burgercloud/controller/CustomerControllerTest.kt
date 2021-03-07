@@ -1,4 +1,4 @@
-package com.bassmeister.burgercloud
+package com.bassmeister.burgercloud.controller
 
 import com.bassmeister.burgercloud.controllers.CustomerController
 import com.bassmeister.burgercloud.domain.Customer
@@ -55,7 +55,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
         val users=controller.getCustomers()
         val beforeCount=users.body?.count()
 
-        val user=controller.addNewCustomer(createTestCustomer());
+        val user=controller.addNewCustomer(ControllerTestHelper.createTestCustomer());
         assertEquals(HttpStatus.CREATED,user.statusCode)
         user.body?.let {
             assertEquals("Test", it.firstName)
@@ -74,7 +74,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
     fun `Add Customer with missing info`(){
         val users=controller.getCustomers()
         val beforeCount=users.body?.count()
-        val testCustomer=createTestCustomer()
+        val testCustomer=ControllerTestHelper.createTestCustomer()
         testCustomer.firstName=""
         testCustomer.lastName=""
 
@@ -96,7 +96,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
 
     @Test
     fun `Delete Customer`(){
-        val toDelete=createTestCustomer()
+        val toDelete=ControllerTestHelper.createTestCustomer()
         val toDeleteModel=controller.addNewCustomer(toDelete)
         val allCustomers=controller.getCustomers()
         allCustomers.body?.let{
@@ -110,7 +110,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
     @Test
     fun `Update Existing Customer`(){
         val customer=controller.getCustomer(1)
-        val newData=createTestCustomer()
+        val newData=ControllerTestHelper.createTestCustomer()
         val updated=controller.updateCustomer(1, newData)
         assertEquals(HttpStatus.OK, updated.statusCode)
         //Test with a fresh load from repo
@@ -123,12 +123,6 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
     }
 
 
-    private fun createTestCustomer():Customer{
-        val testCustomer= Customer("Test", "User",
-            "211 Main Street", "FOO", "AZ",
-            "23421", "123-123-1234")
-        testCustomer.password="BurglarHam"
-        return testCustomer
-    }
+
 
 }

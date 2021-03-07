@@ -17,7 +17,7 @@ import javax.validation.Valid
 
 @RestController @Validated
 @RequestMapping(path = ["/api/customers"], produces = ["application/hal+json"])
-class CustomerController(val repo:CustomerRepository, val orderRepo: OrderRepo) {
+class CustomerController(private val repo:CustomerRepository, private val orderRepo: OrderRepo) {
 
     fun getCustomers():ResponseEntity<List<CustomerModel>> {
         var userList= CustomerConverter.convertUserList(repo.findAll())

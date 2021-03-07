@@ -1,4 +1,4 @@
-package com.bassmeister.burgercloud
+package com.bassmeister.burgercloud.controller
 
 import com.bassmeister.burgercloud.api.converters.IngredientConverter
 import com.bassmeister.burgercloud.controllers.IngredientController

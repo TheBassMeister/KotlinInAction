@@ -1,4 +1,4 @@
-package com.bassmeister.burgercloud
+package com.bassmeister.burgercloud.controller
 
 import com.bassmeister.burgercloud.controllers.BurgerController
 import com.bassmeister.burgercloud.data.IngredientRepo
@@ -66,6 +66,24 @@ class BurgerControllerTest(@Autowired val controller:BurgerController, @Autowire
                 assertEquals("Please select at least three ingredients", ingredientsEx.message)
             }
         }
+    }
+
+    @Test
+    fun `Delete Burger`(){
+        val newBurger=createNewBurger()
+        val created=controller.addNewBurger(newBurger)
+        val totalBurgers=controller.getBurgers()
+        totalBurgers.body?.let {
+            val beforeDeleteSize=it.size
+            created.body?.id?.let {
+                it1 -> val deleteResponse=controller.deleteBurger(it1)
+                assertEquals(HttpStatus.NO_CONTENT, deleteResponse.statusCode)
+            }
+            val afterDeleteSize=controller.getBurgers().body?.size
+            assertEquals(beforeDeleteSize-1, afterDeleteSize)
+        }
+
+
     }
 
     private fun createNewBurger(): Burger {
