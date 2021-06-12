@@ -49,6 +49,11 @@ class DevelopmentConfig {
             val standardBurger=Burger("Standard Burger",burger1Ingredients)
             burgerRepo.save(standardBurger)
 
+            val burger2Ingredients = listOf(sesBun, ketchup, mayo, letc, bacon,pickles, cheese);
+
+            val standardBurger2=Burger("The One with everything",burger2Ingredients)
+            burgerRepo.save(standardBurger2)
+
             orderRepo.save(Order(burglar, listOf(standardBurger),"378618187748325", "03/22", "350"))
 
         }

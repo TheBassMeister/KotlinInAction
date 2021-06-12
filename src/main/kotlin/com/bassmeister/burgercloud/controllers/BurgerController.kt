@@ -1,7 +1,6 @@
 package com.bassmeister.burgercloud.controllers
 
 import com.bassmeister.burgercloud.api.BurgerModel
-import com.bassmeister.burgercloud.api.CustomerModel
 import com.bassmeister.burgercloud.api.converters.BurgerConverter
 import com.bassmeister.burgercloud.data.BurgerRepo
 import com.bassmeister.burgercloud.data.OrderRepo
@@ -12,6 +11,7 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin(origins = ["*"])
 @RequestMapping(path = ["/api/burgers"], produces = ["application/hal+json"])
 class BurgerController(private val burgerRepo: BurgerRepo, private val orderRepo: OrderRepo) {
 

@@ -1,0 +1,44 @@
+div.header {
+  background-color: #76D6FF;
+  background: linear-gradient(#76D6FF, white);
+  width: 100%;
+  height: 175px;
+  border-radius: 10px;
+  position: relative;
+  color: #003366;
+}
+
+div.logo {
+  position: absolute;
+  top: 0px;
+  width: 100px;
+  height: 100px;
+}
+
+div.bottombar {
+  border-top: 1px solid aliceblue;
+  width: 100%;
+  height: 70px;
+}
+
+div.bottombaritems {
+  position: absolute;
+  left: 300px;
+  width: 800px;
+  height:70px;
+}
+
+div.bottombaritem {
+  display: inline-block;
+  width: 220px;
+  height: 100%;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: bold;
+  font-size: 18pt;
+  padding-top: 60px;
+  padding-right: 15px;
+  text-align: center;
+}
+
+
+
