@@ -9,7 +9,8 @@ import { routes } from './app.routes';
 import { HomeComponent } from './home/home.component';
 import { FooterComponent } from './footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
-
+import { BurgerCreationComponent } from './burger-creation/burger-creation.component';
+import { IngredientFilterPipe } from './pipes/ingredient-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,9 @@ import { HttpClientModule } from '@angular/common/http';
     BurgerHeaderComponent,
     StandardBurgersComponent,
     HomeComponent,
-    FooterComponent
+    FooterComponent,
+    BurgerCreationComponent,
+    IngredientFilterPipe
   ],
   imports: [
     BrowserModule,

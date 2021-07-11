@@ -1,0 +1,23 @@
+.burgerCreationHeader{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.ingredientsForm{
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.ingredients-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
+.ingredient-grid-item {
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.nameInput{
+  width: 350px;
+  margin: auto;
+}

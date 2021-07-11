@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@CrossOrigin(origins = ["*"])
 @RequestMapping(path = ["/api/ingredients"], produces = ["application/hal+json"])
 class IngredientController (val repo: IngredientRepo){
 
