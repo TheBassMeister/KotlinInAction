@@ -1,35 +1,39 @@
 <h1 class="burgerCreationHeader">Create your own burger</h1>
-<form class="ingredientsForm">
+<form [formGroup]="burgerCreationForm" (ngSubmit)="onSubmit()">
   <div class="ingredients-container">
     <div class="ingredient-grid-item">Select your Bun:<br/>
-      <select name="cars" id="cars">
-        <option *ngFor="let ingredient of ingredients | ingredientFilter:'BUN'" [ngValue]="ingredient.id">{{ingredient.name}}</option>
+      <select formControlName="bun" name="ingredients" id="ingredients" (change)="selectBun($event)" >
+        <option *ngFor="let ingredient of ingredients | ingredientFilter:'BUN'" [ngValue]="ingredient.name">{{ingredient.name}}</option>
       </select>
     </div>
     <div class="ingredient-grid-item">Select your Sauces:<br/>
       <label formArrayName="sauces" *ngFor="let ingredient of ingredients | ingredientFilter:'SAUCE'; let i = index">
-        <input type="checkbox" [formControlName]="i">
+        <input type="checkbox" [value]="ingredient.name" (change)="onCheckChange($event, 'sauces')">
         {{ingredient.name}}
       </label>
     </div>
     <div class="ingredient-grid-item">Select your Veggies:<br/>
       <label formArrayName="veggies" *ngFor="let ingredient of ingredients | ingredientFilter:'VEG'; let i = index">
-        <input type="checkbox" [formControlName]="i">
+        <input type="checkbox" [value]="ingredient.name" (change)="onCheckChange($event, 'veggies')">
         {{ingredient.name}}
       </label>
     </div>
     <div class="ingredient-grid-item">Select other Ingredients:<br/>
       <label formArrayName="others" *ngFor="let ingredient of ingredients | ingredientFilter:'OTHER'; let i = index">
-        <input type="checkbox" [formControlName]="i">
+        <input type="checkbox" [value]="ingredient.name" (change)="onCheckChange($event, 'others')">
         {{ingredient.name}}
       </label>
     </div>
   </div>
   <div class="nameInput">
-  <div>
-  <label for="burgerName">Name your Burger: </label>
-  <input type="text" id="burgerName" name="burgerName"><br>
-  </div>
-  <input type="submit" style="margin: 10px 127px;" value="Order this burger" />
+    <div>
+      <label for="burgerName">Name your Burger: </label>
+      <input type="text" id="burgerName" name="burgerName" formControlName="burgerName"><br>
+      <button style="margin-top:10px;" title="{{burgerCreationForm.valid? '':'A burger must have a name'}}"
+              [disabled]="!burgerCreationForm.valid">Order this burger</button>
     </div>
+
+
+  </div>
+
 </form>

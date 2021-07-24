@@ -11,6 +11,7 @@ import { FooterComponent } from './footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BurgerCreationComponent } from './burger-creation/burger-creation.component';
 import { IngredientFilterPipe } from './pipes/ingredient-filter.pipe';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -20,12 +21,13 @@ import { IngredientFilterPipe } from './pipes/ingredient-filter.pipe';
     HomeComponent,
     FooterComponent,
     BurgerCreationComponent,
-    IngredientFilterPipe
+    IngredientFilterPipe,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
