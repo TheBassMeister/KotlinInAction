@@ -3,6 +3,6 @@
   <div class="description">
     <div class="ingredients" *ngFor="let ingredient of burger.ingredients">{{ingredient.name}}</div>
   </div>
-  <a class="orderLink" href="/standardBurgers">Order me!</a>
+  <button class="orderLink" (click)="orderBurger(burger)">Order me!</button>
 </div>
 

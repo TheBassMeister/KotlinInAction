@@ -1,11 +1,8 @@
 div.header {
-  background-color: #76D6FF;
   background: linear-gradient(#76D6FF, white);
-  width: 100%;
   height: 175px;
   border-radius: 10px;
   position: relative;
-  color: #003366;
 }
 
 div.logo {
@@ -24,7 +21,7 @@ div.headerbar {
 div.headerbaritems {
   position: absolute;
   left: 300px;
-  width: 800px;
+  width: 85%;
   height:70px;
 }
 
@@ -32,13 +29,17 @@ div.headerbaritem {
   display: inline-block;
   width: 220px;
   height: 100%;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   font-weight: bold;
   font-size: 18pt;
   padding-top: 60px;
   padding-right: 15px;
   text-align: center;
 }
+
+.cart{
+  float:right;
+}
+
 
 
 

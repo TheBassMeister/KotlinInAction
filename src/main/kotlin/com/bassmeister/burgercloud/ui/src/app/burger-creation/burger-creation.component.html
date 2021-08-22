@@ -1,4 +1,4 @@
-<h1 class="burgerCreationHeader">Create your own burger</h1>
+<h1>Create your own burger</h1>
 <form [formGroup]="burgerCreationForm" (ngSubmit)="onSubmit()">
   <div class="ingredients-container">
     <div class="ingredient-grid-item">Select your Bun:<br/>
@@ -27,8 +27,22 @@
   </div>
   <div class="nameInput">
     <div>
-      <label for="burgerName">Name your Burger: </label>
-      <input type="text" id="burgerName" name="burgerName" formControlName="burgerName"><br>
+      <div class="userInputs">
+        <div class="userInputCell">
+          <label for="burgerName">Name your Burger: </label>
+        </div>
+        <div class="userInputCell">
+          <input type="text" id="burgerName" name="burgerName" formControlName="burgerName" /><br/>
+        </div>
+        <div class="userInputCell">
+          <label for="burgerName">Amount: </label>
+        </div>
+        <div class="userInputCell">
+          <input type="number" min="1" value="1" id="amount" name="Amount" formControlName="amount" />
+        </div>
+      </div>
+
+      <br/>
       <button style="margin-top:10px;" title="{{burgerCreationForm.valid? '':'A burger must have a name'}}"
               [disabled]="!burgerCreationForm.valid">Order this burger</button>
     </div>

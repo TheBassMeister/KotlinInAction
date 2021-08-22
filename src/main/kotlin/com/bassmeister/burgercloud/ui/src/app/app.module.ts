@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BurgerCreationComponent } from './burger-creation/burger-creation.component';
 import { IngredientFilterPipe } from './pipes/ingredient-filter.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CartComponent } from './cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     FooterComponent,
     BurgerCreationComponent,
     IngredientFilterPipe,
+    CartComponent,
   ],
   imports: [
     BrowserModule,
