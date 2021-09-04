@@ -19,7 +19,7 @@ export class StandardBurgersComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.get("/burgers").subscribe((data:Burger[]) => {
-        this.standardBurgers = data
+        this.standardBurgers = data.filter(burger => burger.isStandard==true);
     })
   }
 

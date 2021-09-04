@@ -20,7 +20,7 @@ object BurgerConverter {
     }
 
     fun convertBurger(burger:Burger, withLink:Boolean):BurgerModel{
-        var model=BurgerModel(burger.id, burger.name, burger.createdAt,
+        var model=BurgerModel(burger.id, burger.name, burger.createdAt, burger.isStandardBurger,
             IngredientConverter.convertIngredientList(burger.ingredients))
         if(withLink)
             Converter.addLinkToRestHome(model)

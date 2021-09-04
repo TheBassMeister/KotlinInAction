@@ -65,24 +65,56 @@ export class BurgerCreationComponent implements OnInit {
     burgerIngredients.push(...this.getIngredients('sauces', IngredientType.SAUCE));
     burgerIngredients.push(...this.getIngredients('veggies', IngredientType.VEG));
     burgerIngredients.push(...this.getIngredients('others', IngredientType.OTHER));
+
+    if(burgerIngredients.length<3){
+        //There could probably a better solution than an alert
+        alert('A burger must have at least three ingredients');
+        return;
+    }
     const burger: Burger = { name: this.burgerCreationForm.value.burgerName, ingredients:burgerIngredients};
-
     this.cartService.addToCart(burger, this.burgerCreationForm.value.amount);
-
-
   }
 
   private getBun():Ingredient{
-      return {name:this.burgerCreationForm.get('bun').value, type:IngredientType.BUN} as Ingredient;
+      var name=this.burgerCreationForm.get('bun').value;
+      return {id:this.getIdForIngredient(name), name:name, type:IngredientType.BUN} as Ingredient;
   }
 
   private getIngredients(formName:string,type:IngredientType ):Ingredient[]{
       var ingredients:Ingredient[]=[];
       var selectedIngredients=this.burgerCreationForm.get(formName).value;
       for(var ingredient of selectedIngredients){
-        ingredients.push({name:ingredient, type:type} as Ingredient);
+        ingredients.push({id:this.getIdForIngredient(ingredient), name:ingredient, type:type} as Ingredient);
       }
       return ingredients;
   }
+
+  //TODO: Can probably be solved better
+  private getIdForIngredient(ingredientName:string):string{
+      switch(ingredientName) {
+          case "Regular Bun":
+            return "REG_BUN"
+          case "1: Sesame Bun":
+            return "SES_BUN"
+          case "2: Gluten free Bun":
+            return "NOGLUT"
+          case "Ketchup":
+            return "KETCHUP"
+          case "Mayonnaise":
+            return "MAYO"
+          case "Tomatoes":
+            return "TOMA"
+          case "Lettuce":
+             return "LETC"
+         case "Bacon":
+           return "BAC"
+         case "Pickles":
+           return "PICK"
+         case "Cheese":
+          return "CHES";
+      }
+      return "";
+  }
+
 
 }

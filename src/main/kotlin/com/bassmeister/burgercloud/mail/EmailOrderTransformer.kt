@@ -44,7 +44,7 @@ class EmailOrderTransformer(): AbstractMailMessageTransformer<Order>() {
         val bacon= Ingredient("BAC", "Bacon", IngredientType.OTHER)
 
         val burger1Ingredients= listOf(regBun, ketchup,bacon)
-        val standardBurger= Burger("Standard Burger",burger1Ingredients)
+        val standardBurger= Burger("Standard Burger",burger1Ingredients, true)
 
         val burglar= Customer("Burglar","Ham",
             "123 Fries Avenue", "Big Mac", "TX",

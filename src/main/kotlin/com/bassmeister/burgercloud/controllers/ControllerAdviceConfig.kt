@@ -21,7 +21,7 @@ class ControllerAdviceConfig : ResponseEntityExceptionHandler() {
         val body=HashMap<String, Any>()
 
         body["date"]=LocalDateTime.now()
-        body["title"]="Failed to create new customer"
+        body["title"]="Failed to create new object"
         body["description"]=ex.allErrors.map { it.defaultMessage }
 
         return ResponseEntity(body, headers, status)
@@ -32,7 +32,7 @@ class ControllerAdviceConfig : ResponseEntityExceptionHandler() {
         val body=HashMap<String, Any>()
 
         body["date"]=LocalDateTime.now()
-        body["title"]="Failed to create new customer"
+        body["title"]="Failed to create new order"
         body["description"]=ex.message
 
         val headerMap=HttpHeaders()
