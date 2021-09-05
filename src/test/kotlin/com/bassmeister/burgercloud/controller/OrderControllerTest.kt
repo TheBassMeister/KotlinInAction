@@ -3,6 +3,7 @@ package com.bassmeister.burgercloud.controller
 import com.bassmeister.burgercloud.controllers.CANNOT_CREATE_NEW_CUSTOMER
 import com.bassmeister.burgercloud.controllers.CustomOrderException
 import com.bassmeister.burgercloud.controllers.OrderController
+import com.bassmeister.burgercloud.controllers.OrderWrapper
 import com.bassmeister.burgercloud.data.BurgerRepo
 import com.bassmeister.burgercloud.data.CustomerRepository
 import com.bassmeister.burgercloud.domain.Order
@@ -38,7 +39,7 @@ class OrderControllerTest(@Autowired val controller: OrderController,
     fun `Create Order with non existing customer`() {
         val newCustomer=ControllerTestHelper.createTestCustomer()
         val burger=burgerRepo.findAll().elementAt(0)
-        val order=Order(newCustomer, listOf(burger),"347123743137749", "07/23", "341" )
+        val order=OrderWrapper(newCustomer.id, listOf(burger),"347123743137749", "07/23", "341" )
         try {
             controller.addNewOrder(order)
             fail("Creation of an order for a not persisted customer should not have been possible")
@@ -50,7 +51,7 @@ class OrderControllerTest(@Autowired val controller: OrderController,
     @Test
     fun `Create Order with invalid Credit Card`() {
         val order=createTestOrder()
-        order.creditCardNumber="332"
+        order.ccNumber="332"
         try{
             controller.addNewOrder(order)
             fail("Credit Card Number check should not have allowed a save")
@@ -79,10 +80,10 @@ class OrderControllerTest(@Autowired val controller: OrderController,
         }
     }
 
-    private fun createTestOrder():Order{
+    private fun createTestOrder():OrderWrapper{
         val customer=customerRepo.getUserByLastName("Burglar")[0]
         val burger=burgerRepo.findAll().elementAt(0)
-        return Order(customer, listOf(burger),"347123743137749", "07/23", "341" )
+        return OrderWrapper(customer.id, listOf(burger),"347123743137749", "07/23", "341" )
     }
 
 }

@@ -1,0 +1,14 @@
+<h3>Your current orders</h3>
+
+<div *ngIf="burgers.size == 0; else listItems">
+  You haven't ordered any burgers yet
+</div>
+
+<ng-template #listItems>
+  <div class="cart-item" *ngFor="let burger of burgers | keyvalue">
+    <span>{{ burger.key.name }}</span> x<span> {{burger.value}}</span>
+  </div>
+  <button class="checkoutButton" name="checkOut" (click)="checkOut()">Proceed to checkout</button>
+
+</ng-template>
+

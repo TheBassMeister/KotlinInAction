@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Burger } from '../model/Burger';
+import { Order } from '../model/Order';
 
 
 @Injectable({
@@ -17,20 +18,19 @@ export class ApiService {
     }
 
     sendOrders(orders: Map<Burger,Number>){
-      for (let [key, value] of orders) {
-          const headers = new HttpHeaders()
-              .set("Content-Type", "application/json");
-
-          this.http.post<Burger>('http://localhost:8080/api/burgers', key, {headers}).subscribe({
-            next: data =>{
-                console.log(data);
-            },
-            error:error => {
+        const headers = new HttpHeaders()
+          .set("Content-Type", "application/json");
+        //TODO: Amount also needs to be send
+        let allBurgers =[ ...orders.keys() ];
+        var order={customerId:1, burgers:allBurgers} as Order
+        this.http.post<Order>('http://localhost:8080/api/orders', order, {headers}).subscribe({
+          next: data =>{
+              console.log("Successfully persisted order");
+          },
+          error:error => {
               console.error('There was an error!', error);
-            }
-
-          });
-
-      }
+          }
+        });
     }
+
 }
