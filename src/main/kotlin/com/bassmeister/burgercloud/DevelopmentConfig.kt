@@ -1,9 +1,6 @@
 package com.bassmeister.burgercloud
 
-import com.bassmeister.burgercloud.data.BurgerRepo
-import com.bassmeister.burgercloud.data.IngredientRepo
-import com.bassmeister.burgercloud.data.OrderRepo
-import com.bassmeister.burgercloud.data.CustomerRepository
+import com.bassmeister.burgercloud.data.*
 import com.bassmeister.burgercloud.domain.*
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -20,7 +17,7 @@ class DevelopmentConfig {
 
     @Bean
     fun dataLoader(ingredientRepo:IngredientRepo, userRepo:CustomerRepository, burgerRepo:BurgerRepo,
-                   orderRepo: OrderRepo, pwEncoder: PasswordEncoder): CommandLineRunner {
+                   orderRepo: OrderRepo, burgerOrderRepo: BurgerOrderRepo, pwEncoder: PasswordEncoder): CommandLineRunner {
         return CommandLineRunner {
             val regBun=Ingredient("REG_BUN", "Regular Bun", IngredientType.BUN)
             val sesBun=Ingredient("SES_BUN", "Sesame Bun", IngredientType.BUN)
@@ -54,7 +51,14 @@ class DevelopmentConfig {
             val standardBurger2=Burger("The One with everything",burger2Ingredients, true);
             burgerRepo.save(standardBurger2)
 
-            orderRepo.save(Order(burglar, listOf(standardBurger),"378618187748325", "03/22", "350"))
+            val burgerOrder=BurgerOrder(standardBurger,2)
+            burgerOrderRepo.save(burgerOrder)
+            val burgerOrder2=BurgerOrder(standardBurger2,3)
+            burgerOrderRepo.save(burgerOrder2)
+
+            val burgerOrders= listOf(burgerOrder, burgerOrder2)
+
+            orderRepo.save(Order(burglar, burgerOrders,"378618187748325", "03/22", "350"))
 
         }
     }

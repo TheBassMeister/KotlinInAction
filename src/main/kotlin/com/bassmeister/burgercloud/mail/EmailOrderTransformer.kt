@@ -50,7 +50,7 @@ class EmailOrderTransformer(): AbstractMailMessageTransformer<Order>() {
             "123 Fries Avenue", "Big Mac", "TX",
             "76227", "123-123-1234")
 
-        return Order(burglar, listOf(standardBurger),"323445234545","09/22","333")
+        return Order(burglar, listOf(BurgerOrder(standardBurger,3)),"323445234545","09/22","333")
     }
 
 

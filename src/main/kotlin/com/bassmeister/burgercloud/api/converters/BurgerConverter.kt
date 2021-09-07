@@ -3,10 +3,9 @@ package com.bassmeister.burgercloud.api.converters
 
 import com.bassmeister.burgercloud.api.BurgerModel
 import com.bassmeister.burgercloud.controllers.BurgerController
-import com.bassmeister.burgercloud.controllers.RootController
 import com.bassmeister.burgercloud.domain.Burger
-import org.springframework.hateoas.Link
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn
 
 object BurgerConverter {
 

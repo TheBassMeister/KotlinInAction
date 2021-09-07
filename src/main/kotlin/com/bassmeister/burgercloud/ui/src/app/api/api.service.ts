@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Burger } from '../model/Burger';
 import { Order } from '../model/Order';
+import { BurgerOrder } from '../model/BurgerOrder';
 
 
 @Injectable({
@@ -20,9 +21,12 @@ export class ApiService {
     sendOrders(orders: Map<Burger,Number>){
         const headers = new HttpHeaders()
           .set("Content-Type", "application/json");
-        //TODO: Amount also needs to be send
-        let allBurgers =[ ...orders.keys() ];
-        var order={customerId:1, burgers:allBurgers} as Order
+        let burgerOrders: BurgerOrder[]=[];
+        orders.forEach((amount: Number, burger: Burger) =>{
+              burgerOrders.push({amount:amount, burger:burger} as BurgerOrder)
+            }
+        )ó
+        var order={customerId:1, burgers:burgerOrders} as Order
         this.http.post<Order>('http://localhost:8080/api/orders', order, {headers}).subscribe({
           next: data =>{
               console.log("Successfully persisted order");

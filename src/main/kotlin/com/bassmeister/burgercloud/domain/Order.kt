@@ -15,9 +15,9 @@ import javax.validation.constraints.Size
 data class Order (@ManyToOne @OnDelete(action = OnDeleteAction.CASCADE)
                   val customer:Customer,
                   @OneToMany(fetch = FetchType.EAGER)
-                  @JoinColumn(name="order_id") //Need to rethink, as now one burger can only be part of one order
+                  @JoinColumn(name="order_id")
                   @field:Size(min=1, message = "An Order must contain at least one burger")
-                  val burger:List<Burger>,
+                  val burger:List<BurgerOrder>,
                   @JsonIgnore
                   @field:CreditCardNumber(message = "Not a valid credit card number")
                   var creditCardNumber:String="",
