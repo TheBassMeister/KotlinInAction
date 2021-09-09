@@ -1,4 +1,3 @@
-<h3>Your current orders</h3>
 
 <div *ngIf="burgers.size == 0; else listItems">
   You haven't ordered any burgers yet
@@ -8,7 +7,37 @@
   <div class="cart-item" *ngFor="let burger of burgers | keyvalue">
     <span>{{ burger.key.name }}</span> x<span> {{burger.value}}</span>
   </div>
-  <button class="checkoutButton" name="checkOut" (click)="checkOut()">Proceed to checkout</button>
-
+  <button class="checkoutButton" name="checkOut" (click)="open(content)">Proceed to checkout</button>
 </ng-template>
 
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Please enter your credit card information</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form [formGroup]="ccSelectionForm" (ngSubmit)="checkOut()">
+    <div class="modal-body">
+      <div class="form-group" >
+        <input type="radio" value='UseExisting' formControlName="ccSelection">
+        <span class="ccSelection">Use Credit Card Number ending in 8325</span><br/>
+        <input type="radio" value='CreateNew' formControlName="ccSelection">
+        <span class="ccSelection">Use different Credit Card</span>
+      </div>
+      <div *ngIf="ccSelectionForm.get('ccSelection').value=='CreateNew'">
+        <label class="ccLabel" for="cc-number">Credit Card Number:</label>
+        <input id="cc-number" type="tel" formControlName="creditCard" autocomplete="cc-number" ccNumber><br>
+        <label class="ccLabel" for="cc-exp-date">Expiration Date:</label>
+        <input id="cc-exp-date" type="tel" formControlName="expirationDate" autocomplete="cc-exp" ccExp><br>
+        <label class="ccLabel"for="cc-cvc">CVC Number</label>
+        <input id="cc-cvc" type="tel" formControlName="cvc" autocomplete="off" ccCVC>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button"  [disabled]="!ccSelectionForm.valid" class="btn btn-outline-dark" (click)="modal.close('Submit')">Submit Order</button>
+    </div>
+  </form>
+
+</ng-template>

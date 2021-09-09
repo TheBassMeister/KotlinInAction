@@ -13,6 +13,8 @@ import { BurgerCreationComponent } from './burger-creation/burger-creation.compo
 import { IngredientFilterPipe } from './pipes/ingredient-filter.pipe';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CartComponent } from './cart/cart.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CreditCardDirectivesModule } from 'angular-cc-library';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { CartComponent } from './cart/cart.component';
     BrowserModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgbModule,
+    CreditCardDirectivesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

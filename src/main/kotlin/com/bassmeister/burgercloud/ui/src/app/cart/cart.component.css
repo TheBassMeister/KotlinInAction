@@ -5,3 +5,16 @@
 .checkoutButton{
   margin: 5px;
 }
+
+.ccSelection{
+  padding-left:5px;
+}
+
+.ccLabel{
+  width:160px;
+}
+
+input.ng-dirty.ng-invalid {
+    background:pink;
+    border: 2px red solid;
+}

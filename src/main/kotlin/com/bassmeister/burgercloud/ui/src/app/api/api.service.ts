@@ -18,15 +18,15 @@ export class ApiService {
       return this.http.get<Burger[]>('http://localhost:8080/api' + path);
     }
 
-    sendOrders(orders: Map<Burger,Number>){
+    sendOrders(orders: Map<Burger,Number>, ccNumber:String, ccExpDate:String, ccCVC:String){
         const headers = new HttpHeaders()
           .set("Content-Type", "application/json");
         let burgerOrders: BurgerOrder[]=[];
         orders.forEach((amount: Number, burger: Burger) =>{
               burgerOrders.push({amount:amount, burger:burger} as BurgerOrder)
             }
-        )ó
-        var order={customerId:1, burgers:burgerOrders} as Order
+        )
+        var order={customerId:1, burgers:burgerOrders, ccNumber:ccNumber, ccExpDate:ccExpDate, ccCVC:ccCVC} as Order
         this.http.post<Order>('http://localhost:8080/api/orders', order, {headers}).subscribe({
           next: data =>{
               console.log("Successfully persisted order");
