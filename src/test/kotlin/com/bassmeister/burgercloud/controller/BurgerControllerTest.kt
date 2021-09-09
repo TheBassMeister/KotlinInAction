@@ -15,7 +15,7 @@ import javax.validation.ConstraintViolationException
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BurgerControllerTest(@Autowired val controller:BurgerController, @Autowired val ingredientRepo: IngredientRepo) {
     companion object{
-        var nrOfBurgers=1 //Not so gooding style need to rethink
+        var nrOfBurgers=2 //Not so gooding style need to rethink
     }
 
 
@@ -29,7 +29,7 @@ class BurgerControllerTest(@Autowired val controller:BurgerController, @Autowire
     @Test
     fun `Get Burger`() {
         val burger=controller.getBurger(3);
-        Assertions.assertEquals(HttpStatus.OK, burger.statusCode)
+        assertEquals(HttpStatus.OK, burger.statusCode)
         burger.body?.let {
             assertEquals("Standard Burger",it.name)
             val ingredients=it.ingredients
@@ -92,14 +92,14 @@ class BurgerControllerTest(@Autowired val controller:BurgerController, @Autowire
         val extra=ingredientRepo.findById("TOMA").get()
         val extra2=ingredientRepo.findById("BAC").get()
         val burger1Ingredients= listOf(bun, sauce,extra, extra2)
-        return Burger("BACON MASTER", burger1Ingredients)
+        return Burger("BACON MASTER", burger1Ingredients,false)
     }
 
     private fun createBurgerWithNotEnoughIngredients(): Burger {
         val bun=ingredientRepo.findById("SES_BUN").get()
         val sauce=ingredientRepo.findById("KETCHUP").get()
         val burger1Ingredients= listOf(bun, sauce)
-        return Burger("Not Enough Ingredients Burger", burger1Ingredients)
+        return Burger("Not Enough Ingredients Burger", burger1Ingredients, false)
     }
 
 }

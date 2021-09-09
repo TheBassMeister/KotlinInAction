@@ -3,8 +3,12 @@ package com.bassmeister.burgercloud.controller
 import com.bassmeister.burgercloud.controllers.CANNOT_CREATE_NEW_CUSTOMER
 import com.bassmeister.burgercloud.controllers.CustomOrderException
 import com.bassmeister.burgercloud.controllers.OrderController
+import com.bassmeister.burgercloud.controllers.OrderWrapper
 import com.bassmeister.burgercloud.data.BurgerRepo
 import com.bassmeister.burgercloud.data.CustomerRepository
+import com.bassmeister.burgercloud.data.IngredientRepo
+import com.bassmeister.burgercloud.domain.Burger
+import com.bassmeister.burgercloud.domain.BurgerOrder
 import com.bassmeister.burgercloud.domain.Order
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,7 +23,8 @@ import javax.validation.ConstraintViolationException
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OrderControllerTest(@Autowired val controller: OrderController,
                           @Autowired val customerRepo:CustomerRepository,
-                          @Autowired val burgerRepo: BurgerRepo) {
+                          @Autowired val burgerRepo: BurgerRepo,
+                          @Autowired val ingredientRepo: IngredientRepo) {
 
 
     @Test
@@ -28,9 +33,7 @@ class OrderControllerTest(@Autowired val controller: OrderController,
         val orderResponse=controller.addNewOrder(order)
         assertEquals(HttpStatus.CREATED, orderResponse.statusCode)
         orderResponse.body?.let {
-            assertEquals("Ham",it.user.firstName)
-            assertEquals("Burglar",it.user.lastName)
-            assertEquals("Standard Burger", it.burgers[0].name)
+            assertEquals("1",it.customerId)
         }
     }
 
@@ -38,7 +41,7 @@ class OrderControllerTest(@Autowired val controller: OrderController,
     fun `Create Order with non existing customer`() {
         val newCustomer=ControllerTestHelper.createTestCustomer()
         val burger=burgerRepo.findAll().elementAt(0)
-        val order=Order(newCustomer, listOf(burger),"347123743137749", "07/23", "341" )
+        val order=OrderWrapper(newCustomer.id, listOf(BurgerOrder(burger,3)),"347123743137749", "07/23", "341" )
         try {
             controller.addNewOrder(order)
             fail("Creation of an order for a not persisted customer should not have been possible")
@@ -50,7 +53,7 @@ class OrderControllerTest(@Autowired val controller: OrderController,
     @Test
     fun `Create Order with invalid Credit Card`() {
         val order=createTestOrder()
-        order.creditCardNumber="332"
+        order.ccNumber="332"
         try{
             controller.addNewOrder(order)
             fail("Credit Card Number check should not have allowed a save")
@@ -62,6 +65,29 @@ class OrderControllerTest(@Autowired val controller: OrderController,
                 assertEquals("Not a valid credit card number", ingredientsEx.message)
             }
         }
+    }
+
+    @Test
+    fun `Create Order with custom Burger`() {
+        val customer=customerRepo.getUserByLastName("Burglar")[0]
+        val newBurger=createNewBurger();
+        val order=OrderWrapper(customer.id, listOf(BurgerOrder(newBurger,2)),"347123743137749", "07/23", "341" )
+        val orderResponse=controller.addNewOrder(order)
+        assertEquals(HttpStatus.CREATED, orderResponse.statusCode)
+        orderResponse.body?.let {
+            assertEquals(1, it.customerId)
+        }
+
+    }
+
+    //todo: MAYBE MOVE TO UTILITY CLASS
+    private fun createNewBurger(): Burger {
+        val bun=ingredientRepo.findById("SES_BUN").get()
+        val sauce=ingredientRepo.findById("KETCHUP").get()
+        val extra=ingredientRepo.findById("TOMA").get()
+        val extra2=ingredientRepo.findById("BAC").get()
+        val burger1Ingredients= listOf(bun, sauce,extra, extra2)
+        return Burger("BACON MASTER", burger1Ingredients,false)
     }
 
     @Test
@@ -79,10 +105,10 @@ class OrderControllerTest(@Autowired val controller: OrderController,
         }
     }
 
-    private fun createTestOrder():Order{
+    private fun createTestOrder():OrderWrapper{
         val customer=customerRepo.getUserByLastName("Burglar")[0]
         val burger=burgerRepo.findAll().elementAt(0)
-        return Order(customer, listOf(burger),"347123743137749", "07/23", "341" )
+        return OrderWrapper(customer.id, listOf(BurgerOrder(burger,1)),"347123743137749", "07/23", "341" )
     }
 
 }

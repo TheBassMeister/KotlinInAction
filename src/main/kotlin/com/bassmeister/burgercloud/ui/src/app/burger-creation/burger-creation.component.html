@@ -1,0 +1,53 @@
+<h1>Create your own burger</h1>
+<form [formGroup]="burgerCreationForm" (ngSubmit)="onSubmit()">
+  <div class="ingredients-container">
+    <div class="ingredient-grid-item">Select your Bun:<br/>
+      <select formControlName="bun" name="ingredients" id="ingredients" (change)="selectBun($event)" >
+        <option *ngFor="let ingredient of ingredients | ingredientFilter:'BUN'" [ngValue]="ingredient.name">{{ingredient.name}}</option>
+      </select>
+    </div>
+    <div class="ingredient-grid-item">Select your Sauces:<br/>
+      <label formArrayName="sauces" *ngFor="let ingredient of ingredients | ingredientFilter:'SAUCE'; let i = index">
+        <input type="checkbox" [value]="ingredient.name" (change)="onCheckChange($event, 'sauces')">
+        {{ingredient.name}}
+      </label>
+    </div>
+    <div class="ingredient-grid-item">Select your Veggies:<br/>
+      <label formArrayName="veggies" *ngFor="let ingredient of ingredients | ingredientFilter:'VEG'; let i = index">
+        <input type="checkbox" [value]="ingredient.name" (change)="onCheckChange($event, 'veggies')">
+        {{ingredient.name}}
+      </label>
+    </div>
+    <div class="ingredient-grid-item">Select other Ingredients:<br/>
+      <label formArrayName="others" *ngFor="let ingredient of ingredients | ingredientFilter:'OTHER'; let i = index">
+        <input type="checkbox" [value]="ingredient.name" (change)="onCheckChange($event, 'others')">
+        {{ingredient.name}}
+      </label>
+    </div>
+  </div>
+  <div class="nameInput">
+    <div>
+      <div class="userInputs">
+        <div class="userInputCell">
+          <label for="burgerName">Name your Burger: </label>
+        </div>
+        <div class="userInputCell">
+          <input type="text" id="burgerName" name="burgerName" formControlName="burgerName" /><br/>
+        </div>
+        <div class="userInputCell">
+          <label for="burgerName">Amount: </label>
+        </div>
+        <div class="userInputCell">
+          <input type="number" min="1" value="1" id="amount" name="Amount" formControlName="amount" />
+        </div>
+      </div>
+
+      <br/>
+      <button style="margin-top:10px;" title="{{burgerCreationForm.valid? '':'A burger must have a name'}}"
+              [disabled]="!burgerCreationForm.valid">Order this burger</button>
+    </div>
+
+
+  </div>
+
+</form>

@@ -1,0 +1,8 @@
+<div class="standardBurgers" *ngFor="let burger of standardBurgers">
+  <div class="name"><span class="small">The</span><br/>"{{burger.name}}"</div>
+  <div class="description">
+    <div class="ingredients" *ngFor="let ingredient of burger.ingredients">{{ingredient.name}}</div>
+  </div>
+  <button class="orderLink" (click)="orderBurger(burger)">Order me!</button>
+</div>
+

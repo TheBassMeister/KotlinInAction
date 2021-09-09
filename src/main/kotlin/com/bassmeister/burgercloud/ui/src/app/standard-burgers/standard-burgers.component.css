@@ -1,0 +1,46 @@
+div.standardBurgers {
+  display: inline-block;
+  vertical-align: top;
+  width: 300px;
+  margin: 10px;
+  border-radius: 10px;
+  text-align: center;
+  padding: 0 10px 10px 0;
+  height: 100%;
+  color: #003366;
+  border: 1px solid #76D6FF;
+  background:azure;
+}
+
+div.name {
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid lightblue;
+  padding-bottom: 10px;
+  text-transform: capitalize;
+}
+
+div.description {
+  padding: 20px;
+  text-align: center;
+  font-size: 12pt;
+}
+
+.small {
+  font-size: 12pt;
+}
+
+
+.orderLink {
+  background-color: rgba(118, 214, 255,0.25);
+  color: #003366;
+  font-size: 10pt;
+  padding: 4px;
+  font-weight: bold;
+  border-color:lightblue;
+  border-radius: 10px;
+}
+
+.orderLink:hover{
+  background-color: rgba(118, 214, 255, 0.5);
+}

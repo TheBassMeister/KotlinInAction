@@ -19,7 +19,7 @@ class OrderListener(val orderRepo: OrderRepo, val customerRepository: CustomerRe
         if(!customerRepository.findById(order.customer.id).isPresent){
             customerRepository.save(order.customer)
         }
-        order.burger.forEach(burgerRepo::save);
+        order.burger.forEach{ burgerRepo.save(it.burger)};
 
         orderRepo.save(order)
         countDownLatch.countDown()

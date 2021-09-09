@@ -1,0 +1,25 @@
+.ingredients-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
+.ingredient-grid-item {
+  padding: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.nameInput{
+  width: 350px;
+  margin: auto;
+}
+
+.userInputs{
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.userInputCell{
+  padding: 5px 0px;
+}
+

@@ -1,0 +1,45 @@
+div.header {
+  background: linear-gradient(#76D6FF, white);
+  height: 175px;
+  border-radius: 10px;
+  position: relative;
+}
+
+div.logo {
+  position: absolute;
+  top: 0px;
+  width: 100px;
+  height: 100px;
+}
+
+div.headerbar {
+  border-top: 1px solid aliceblue;
+  width: 100%;
+  height: 70px;
+}
+
+div.headerbaritems {
+  position: absolute;
+  left: 300px;
+  width: 85%;
+  height:70px;
+}
+
+div.headerbaritem {
+  display: inline-block;
+  width: 220px;
+  height: 100%;
+  font-weight: bold;
+  font-size: 18pt;
+  padding-top: 60px;
+  padding-right: 15px;
+  text-align: center;
+}
+
+.cart{
+  float:right;
+}
+
+
+
+

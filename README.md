@@ -5,4 +5,4 @@ This is my attempt at writing a full RESTful Spring boot app using Kotlin and Gr
 
 Currently this project has all the repos and a REST Api (under localhost:8080/api if you start it from your local machine) completely written in Kotlin. It also has a basic Spring security implementation. Currently I am working on finalizing the Kafka listeners and Kafka producers to send messages to create some order objects.
 
-In the near future this project will also have a basic not very fancy UI and will be enhanced by things like Spring AOP and Spring Batch.
+In the future this project will also have a basic not very fancy UI and will be enhanced by things like Spring AOP and Spring Batch.

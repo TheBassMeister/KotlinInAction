@@ -46,7 +46,7 @@ class CustomerControllerTest(@Autowired val controller:CustomerController) {
         orders.body?.let{
             assertEquals(1, orders.body?.size)
             val order= orders.body!![0]
-            assertEquals("Standard Burger", order.burgers[0].name)
+            assertEquals("Standard Burger", order.burgers[0].burger.name)
         }
     }
 
