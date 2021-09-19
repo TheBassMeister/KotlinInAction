@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import java.net.URI
 
-@Component
+//@Component
 class OrderSubmitMessageHandler(val apiProps:ApiProperties, @Autowired val rest:RestTemplate):GenericHandler<Order> {
 
     override fun handle(payload: Order?, headers: MessageHeaders?): Any? {

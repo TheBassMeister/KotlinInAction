@@ -3,14 +3,15 @@ package com.bassmeister.burgercloud
 import com.bassmeister.burgercloud.data.*
 import com.bassmeister.burgercloud.domain.*
 import org.springframework.boot.CommandLineRunner
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.JavaMailSenderImpl
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.client.RestTemplate
+import org.springframework.validation.Validator
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean
+
 
 @Configuration
 class DevelopmentConfig {
@@ -64,13 +65,14 @@ class DevelopmentConfig {
     }
 
     @Bean
-    fun restTemplate(builder: RestTemplateBuilder): RestTemplate {
-        return builder.build()
+    fun mailSender(): JavaMailSender {
+        return JavaMailSenderImpl()
     }
 
     @Bean
-    fun mailSender(): JavaMailSender {
-        return JavaMailSenderImpl()
+    @Primary
+    fun springValidator(): Validator {
+        return LocalValidatorFactoryBean()
     }
 
 }

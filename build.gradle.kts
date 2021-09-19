@@ -17,18 +17,21 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-hateoas")
+	//implementation("org.springframework.boot:spring-boot-starter-hateoas")
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	//implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-data-rest")
+	implementation("org.springframework.boot:spring-boot-starter-data-rest"){
+		exclude("org.springframework.boot","spring-boot-starter-web")
+	}
 	implementation("org.springframework.boot:spring-boot-starter-integration")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.integration:spring-integration-mail:5.4.3")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("javax.mail:javax.mail-api:1.6.2")
 	implementation("com.sun.mail:javax.mail:1.6.2")
 	implementation("junit:junit:4.12")

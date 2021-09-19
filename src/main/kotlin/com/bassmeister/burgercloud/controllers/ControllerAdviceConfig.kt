@@ -12,7 +12,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.time.LocalDateTime
 import java.util.*
 
-@ControllerAdvice
+//@ControllerAdvice
 class ControllerAdviceConfig : ResponseEntityExceptionHandler() {
 
     override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException, headers: HttpHeaders,

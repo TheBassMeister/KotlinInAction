@@ -1,65 +1,43 @@
 package com.bassmeister.burgercloud.controller
 
-import com.bassmeister.burgercloud.api.converters.IngredientConverter
-import com.bassmeister.burgercloud.controllers.IngredientController
-import com.bassmeister.burgercloud.data.IngredientRepo
 import com.bassmeister.burgercloud.domain.IngredientType
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatus
+import org.springframework.test.web.reactive.server.WebTestClient
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class IngredientControllerTest {
-
-    @Autowired
-    private lateinit var ingredientController: IngredientController
-    @Autowired
-    private lateinit var ingredientRepo:IngredientRepo
+class IngredientControllerTest(
+    @Autowired val testClient: WebTestClient
+) {
 
 
     @Test
     fun `Load All Ingredients`() {
-        val ingredients=ingredientController.getAllIngredients()
-        //Not a good test, but I am just testing testing
-        assertEquals(HttpStatus.OK, ingredients.statusCode)
-        assertEquals(10, ingredients.body?.count())
+        testClient.get().uri("/ingredients").exchange()
+            .expectStatus().isOk
+            .expectBody().jsonPath("$").isArray
+            .jsonPath("$").isNotEmpty
+            .jsonPath("$.length()").isEqualTo(10)
     }
 
     @Test
     fun `Load Ingredient By Type`() {
-        val sauces = ingredientController.getIngredientsByType("SAUCE")
-        assertNotNull(sauces.body)
-        val result=sauces.body
-        assertEquals(2,result!!.count())
-        var ingredientsAsModels= IngredientConverter.convertIngredientList(ingredientRepo.getIngredientByType(IngredientType.SAUCE))
-        assertTrue(result!!.containsAll(ingredientsAsModels), "Did not load all sauces")
-        ingredientsAsModels.forEach{ model ->
-            assertTrue(model.hasLinks())
-            var link=model.getLink("self")
-            assertTrue(link.isPresent)
-            if(model.id=="KETCHUP"){
-                assertEquals("/api/ingredients/KETCHUP",link.get().href)
-            }else{
-                assertEquals("/api/ingredients/MAYO",link.get().href)
-            }
-        }
-
+        testClient.get().uri("/ingredients?type=SAUCE").exchange().expectStatus().isOk
+            .expectBody().jsonPath("$.length()").isEqualTo(2)
+            .jsonPath("$[0].name").isEqualTo("Ketchup")
+            .jsonPath("$[1].name").isEqualTo("Mayonnaise")
     }
 
     @Test
-    fun `Get Single Ingredient`(){
-        val ingredientResponse=ingredientController.getIngredientById("BAC")
-        assertEquals( HttpStatus.OK,ingredientResponse.statusCode)
-        val ingredient=ingredientResponse.body;
-        assertEquals("Bacon", ingredient?.name)
-        assertEquals(IngredientType.OTHER.name, ingredient?.type)
+    fun `Get Single Ingredient`() {
+        testClient.get().uri("/ingredients/BAC").exchange().expectStatus().isOk.expectBody().jsonPath("$.name")
+            .isEqualTo("Bacon")
+            .jsonPath("$.type").isEqualTo(IngredientType.OTHER.name)
     }
 
     @Test
-    fun `Get Non Existing Ingredient`(){
-        val ingredientResponse=ingredientController.getIngredientById("FOO")
-        assertEquals( HttpStatus.NOT_FOUND,ingredientResponse.statusCode)
+    fun `Get Non Existing Ingredient`() {
+        testClient.get().uri("/ingredients/FOO").exchange().expectStatus().isNotFound
     }
 }
