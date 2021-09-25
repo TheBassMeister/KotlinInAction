@@ -13,7 +13,7 @@ class CorsConfig : WebFluxConfigurer {
     override fun addCorsMappings(corsRegistry: CorsRegistry) {
         corsRegistry.addMapping("/**")
             .allowedOrigins("http://localhost:4200")
-            .allowedMethods("GET")
+            .allowedMethods("GET", "POST")
             .maxAge(3600)
     }
 }

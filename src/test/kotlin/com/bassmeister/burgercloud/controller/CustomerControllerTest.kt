@@ -1,128 +1,130 @@
 package com.bassmeister.burgercloud.controller
 
-import com.bassmeister.burgercloud.controllers.CustomerController
 import com.bassmeister.burgercloud.domain.Customer
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.HttpStatus
-import javax.validation.ConstraintViolationException
+import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.expectBody
+import reactor.core.publisher.Mono
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CustomerControllerTest(@Autowired val controller:CustomerController) {
-    companion object{
-        var nrOfCustomers=2 //Not so gooding style need to rethink
-    }
+class CustomerControllerTest(@Autowired val testClient: WebTestClient) {
 
+    private val customers="/customers"
 
     @Test
     fun `Load All Users`() {
-        val users=controller.getCustomers()
-        assertEquals(HttpStatus.OK, users.statusCode)
-        assertEquals(nrOfCustomers, users.body?.size)
+        testClient.get().uri(customers).exchange().expectStatus().isOk
+            .expectBody().jsonPath("$").isArray
+            .jsonPath("$[0].firstName").isEqualTo("Ham")
+            .jsonPath("$[1].firstName").isEqualTo("Ronald")
     }
 
     @Test
-    fun `Load Hamburglar`(){
-        val user=controller.getUsersByLastName("Burglar")
-        user?.let{
-            assertNotNull(it.body)
-            assertEquals(1, it.body?.size)
-            val burglar = it.body?.get(0)
-            burglar?.let {
-                assertEquals("Ham", burglar.firstName)
-                assertEquals("Burglar", burglar.lastName)
-                assertEquals("Big Mac", burglar.city)
+    fun `Load Hamburglar`() {
+        testClient.get().uri("$customers?lastName=Burglar").exchange().expectStatus().isOk
+            .expectBody().jsonPath("$").isArray
+            .jsonPath("$[0].firstName").isEqualTo("Ham")
+            .jsonPath("$[0].lastName").isEqualTo("Burglar")
+            .jsonPath("$[0].city").isEqualTo("Big Mac")
+    }
+
+    @Test
+    fun `Add new Customer`() {
+        var countBefore = 0;
+        testClient.get().uri(customers).exchange().expectBody().jsonPath("$.size()").value<Int> {
+            countBefore = it;
+        }
+
+        val customer = Mono.just(ControllerTestHelper.createTestCustomer())
+
+        testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
+            .body(customer, Customer::class.java).exchange()
+            .expectStatus().isCreated
+            .expectBody().jsonPath("$.firstName").isEqualTo("Test")
+            .jsonPath("$.lastName").isEqualTo("User")
+
+
+        testClient.get().uri("/customers").exchange().expectBody().jsonPath("$.size()").value<Int> {
+            assertEquals(countBefore + 1, it)
+        }
+    }
+
+    @Test
+    fun `Add Customer with missing info`() {
+        val customer = ControllerTestHelper.createTestCustomer()
+        customer.firstName = ""
+        customer.lastName = ""
+
+        var result = testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
+            .body(Mono.just(customer), Customer::class.java).exchange()
+            .expectStatus().isBadRequest
+            .expectBody<String>().returnResult().responseBody
+
+        assertNotNull(result, "There should have been failed validation message")
+        if (result != null) {
+            assertTrue(
+                result.contains("First Name must be set"),
+                "There was no validation message about missing first name"
+            )
+            assertTrue(
+                result.contains("Last Name must be set"),
+                "There was no validation message about missing last name"
+            )
+        }
+    }
+
+    @Test
+    fun `Update Existing Customer`() {
+        var id = 0
+        val customer = ControllerTestHelper.createTestCustomer()
+        testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
+            .body(Mono.just(customer), Customer::class.java).exchange().expectBody().jsonPath("$.id").value<Int> {
+                id = it
             }
+        customer.firstName = "Updated"
+        customer.lastName = "Fooo"
+        testClient.put().uri("$customers/$id").contentType(MediaType.APPLICATION_JSON)
+            .body(Mono.just(customer), Customer::class.java).exchange().expectStatus().isOk
+
+        testClient.get().uri("$customers?lastName=Fooo").exchange().expectStatus().isOk.expectBody().jsonPath("$[0].id")
+            .value<Int> {
+                assertEquals(id, it)
+            }.jsonPath("$[0].firstName").isEqualTo("Updated")
+
+    }
+
+    @Test
+    fun `Delete Customer`() {
+        var id = 0
+        val customer = ControllerTestHelper.createTestCustomer()
+        testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
+            .body(Mono.just(customer), Customer::class.java).exchange().expectBody().jsonPath("$.id").value<Int> {
+                id = it
+            }
+
+        var countBeforeDelete = 0;
+        testClient.get().uri(customers).exchange().expectBody().jsonPath("$.size()").value<Int> {
+            countBeforeDelete = it;
+        }
+
+        testClient.delete().uri("$customers/$id").exchange().expectStatus().isOk
+        testClient.get().uri(customers).exchange().expectBody().jsonPath("$.size()").value<Int> {
+            assertEquals(countBeforeDelete-1, it)
         }
     }
 
     @Test
     fun `Get Hamburglars Orders`(){
-        val orders=controller.getOrders(1)
-        assertNotNull(orders.body, "Could not find Hamburglar's orders")
-        orders.body?.let{
-            assertEquals(1, orders.body?.size)
-            val order= orders.body!![0]
-            assertEquals("Standard Burger", order.burgers[0].burger.name)
-        }
+        testClient.get().uri("$customers/orders/1").exchange().expectStatus().isOk
+            .expectBody().jsonPath("$").isArray
+            .jsonPath("$.size()").isEqualTo(1)
+            .jsonPath("$[0].burgers").isArray
+            .jsonPath("$[0].burgers.size()").isEqualTo(2)
+            .jsonPath("$[0].burgers[0].burger.name").isEqualTo("Standard Burger")
     }
-
-    @Test
-    fun `Add new Customer`(){
-        val users=controller.getCustomers()
-        val beforeCount=users.body?.count()
-
-        val user=controller.addNewCustomer(ControllerTestHelper.createTestCustomer());
-        assertEquals(HttpStatus.CREATED,user.statusCode)
-        user.body?.let {
-            assertEquals("Test", it.firstName)
-            assertEquals("User", it.lastName)
-        }
-
-        val usersAfter=controller.getCustomers()
-        if (beforeCount != null) {
-            Assertions.assertEquals(beforeCount+1, usersAfter.body?.count())
-        }
-        nrOfCustomers++
-    }
-
-
-    @Test
-    fun `Add Customer with missing info`(){
-        val users=controller.getCustomers()
-        val beforeCount=users.body?.count()
-        val testCustomer=ControllerTestHelper.createTestCustomer()
-        testCustomer.firstName=""
-        testCustomer.lastName=""
-
-        try {
-            val user = controller.addNewCustomer(testCustomer)
-            fail("User Validation should have failed")
-        }catch (ex: ConstraintViolationException){
-            ex.message?.let {
-                assertTrue(it.contains("addNewCustomer.customer.firstName"))
-                assertTrue(it.contains("addNewCustomer.customer.lastName"))
-            }
-        }
-
-        val usersAfter=controller.getCustomers()
-        if (beforeCount != null) {
-            Assertions.assertEquals(beforeCount, usersAfter.body?.count())
-        }
-    }
-
-    @Test
-    fun `Delete Customer`(){
-        val toDelete=ControllerTestHelper.createTestCustomer()
-        val toDeleteModel=controller.addNewCustomer(toDelete)
-        val allCustomers=controller.getCustomers()
-        allCustomers.body?.let{
-            val beforeSize=it.size
-            val deleteOP= toDeleteModel.body?.id?.let { it1 -> controller.deleteCustomer(it1) }
-            assertEquals(HttpStatus.NO_CONTENT,deleteOP?.statusCode)
-            assertEquals(beforeSize-1, controller.getCustomers().body?.size)
-        }
-    }
-
-    @Test
-    fun `Update Existing Customer`(){
-        val customer=controller.getCustomer(1)
-        val newData=ControllerTestHelper.createTestCustomer()
-        val updated=controller.updateCustomer(1, newData)
-        assertEquals(HttpStatus.OK, updated.statusCode)
-        //Test with a fresh load from repo
-        val customerUpdate=controller.getCustomer(1)
-        customerUpdate.body?.let {
-            assertEquals("Test", it.firstName)
-            assertEquals("User", it.lastName)
-        }
-
-    }
-
-
-
 
 }

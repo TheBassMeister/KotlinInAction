@@ -1,6 +1,9 @@
 package com.bassmeister.burgercloud.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import javax.persistence.Entity
@@ -12,33 +15,71 @@ import javax.validation.constraints.NotEmpty
 
 @Entity
 data class Customer(
-    @field:NotEmpty(message="First Name must be set")
-    var firstName:String="",
-    @field:NotEmpty(message="Last Name must be set")
-    var lastName:String="",
-    @field:NotEmpty(message="Street must be set")
-    var street:String="",
-    @field:NotEmpty(message="City must be set")
-    var city:String="",
-    @field:NotEmpty(message="State must be set")
-    var state:String="",
+    @field:NotEmpty(message = "First Name must be set")
+    var firstName: String = "",
+    @field:NotEmpty(message = "Last Name must be set")
+    var lastName: String = "",
+    @field:NotEmpty(message = "Street must be set")
+    var street: String = "",
+    @field:NotEmpty(message = "City must be set")
+    var city: String = "",
+    @field:NotEmpty(message = "State must be set")
+    var state: String = "",
     @field:Digits(integer = 5, fraction = 0, message = "Invalid Zip")
-    var zip:String="",
-    @field:NotEmpty(message="Phone Number must be set")
-    var phoneNumber:String=""
-) {
+    var zip: String = "",
+    @field:NotEmpty(message = "Phone Number must be set")
+    var phoneNumber: String = ""
+) : UserDetails {
 
     @Transient
     @JsonIgnore
-    val pwEncoder: PasswordEncoder=BCryptPasswordEncoder()
+    val pwEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
-    var password: String = ""
-        set(value) {
-            field=pwEncoder.encode(value)
-        }
-
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id:Long=0L
+    var id: Long = 0L
+
+    @JsonIgnore
+    var pass: String = ""
+        set(value) {
+            field = pwEncoder.encode(value)
+        }
+
+    @JsonIgnore
+    override fun getPassword(): String {
+        return pass
+    }
+
+    @JsonIgnore
+    override fun getUsername(): String {
+        return lastName
+    }
+
+    @JsonIgnore
+    override fun getAuthorities(): Collection<out GrantedAuthority> {
+        return listOf(SimpleGrantedAuthority("ROLE_USER"))
+    }
+
+    @JsonIgnore
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    @JsonIgnore
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    @JsonIgnore
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    @JsonIgnore
+    override fun isEnabled(): Boolean {
+        return true
+    }
+
 
 }

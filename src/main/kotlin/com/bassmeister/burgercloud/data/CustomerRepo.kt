@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.rest.core.annotation.RestResource
 
 @RestResource(exported = false)
-interface CustomerRepository :CrudRepository<Customer, Long>{
+interface CustomerRepo : CrudRepository<Customer, Long> {
 
-    fun getUserByLastName(lastName:String):List<Customer>
+    fun getUserByLastName(lastName: String): List<Customer>
 }

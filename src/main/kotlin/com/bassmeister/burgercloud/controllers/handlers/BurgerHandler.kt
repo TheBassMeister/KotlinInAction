@@ -13,9 +13,9 @@ import java.net.URI
 @Component
 class BurgerHandler(private val burgerRepo: BurgerRepo) : AbstractValidationHandler<Burger>(Burger::class.java) {
 
-    override fun processBody(burger: Burger, request: ServerRequest): Mono<ServerResponse> {
-        burgerRepo.save(burger) //TODO : Make this request non blocking (in next chapter)
-        return ServerResponse.created(URI.create("")).body(BodyInserters.fromValue(burger))
+    override fun postRequestHandler(burger: Burger, request: ServerRequest): Mono<ServerResponse> {
+        val created = burgerRepo.save(burger) //TODO : Make this request non blocking (in next chapter)
+        return ServerResponse.created(URI.create("")).body(BodyInserters.fromValue(created))
     }
 
     fun getAllBurgers(): Mono<ServerResponse> {

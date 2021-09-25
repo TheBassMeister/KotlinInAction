@@ -14,9 +14,11 @@ import reactor.core.publisher.Mono
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BurgerControllerTest(@Autowired val ingredientRepo: IngredientRepo, @Autowired val testClient: WebTestClient) {
 
+    private val burgers="/burgers"
+
     @Test
     fun `Get All Burgers`() {
-        testClient.get().uri("/burgers").exchange()
+        testClient.get().uri(burgers).exchange()
             .expectStatus().isOk
             .expectBody().jsonPath("$").isArray
             .jsonPath("$").isNotEmpty
@@ -26,7 +28,7 @@ class BurgerControllerTest(@Autowired val ingredientRepo: IngredientRepo, @Autow
 
     @Test
     fun `Get Burger`() {
-        testClient.get().uri("/burgers/3").exchange()
+        testClient.get().uri("$burgers/3").exchange()
             .expectStatus().isOk
             .expectBody().jsonPath("$.name").isEqualTo("Standard Burger")
             .jsonPath("$.ingredients").isArray
@@ -36,17 +38,17 @@ class BurgerControllerTest(@Autowired val ingredientRepo: IngredientRepo, @Autow
     @Test
     fun `Add Burger`() {
         var countBefore = 0;
-        testClient.get().uri("/burgers").exchange().expectBody().jsonPath("$.size()").value<Int> {
+        testClient.get().uri(burgers).exchange().expectBody().jsonPath("$.size()").value<Int> {
             countBefore = it;
         }
 
         val burger = Mono.just(createNewBurger())
-        testClient.post().uri("/burgers").contentType(MediaType.APPLICATION_JSON)
+        testClient.post().uri(burgers).contentType(MediaType.APPLICATION_JSON)
             .body(burger, Burger::class.java).exchange()
             .expectStatus().isCreated
             .expectBody().jsonPath("$.name").isEqualTo("BACON MASTER")
 
-        testClient.get().uri("/burgers").exchange().expectBody().jsonPath("$.size()").value<Int> {
+        testClient.get().uri(burgers).exchange().expectBody().jsonPath("$.size()").value<Int> {
             assertEquals(countBefore + 1, it)
         }
 
@@ -55,7 +57,7 @@ class BurgerControllerTest(@Autowired val ingredientRepo: IngredientRepo, @Autow
     @Test
     fun `Not Enough Ingredients`() {
         val burger = Mono.just(createBurgerWithNotEnoughIngredients())
-        testClient.post().uri("/burgers").contentType(MediaType.APPLICATION_JSON)
+        testClient.post().uri(burgers).contentType(MediaType.APPLICATION_JSON)
             .body(burger, Burger::class.java).exchange()
             .expectStatus().isBadRequest
             .expectBody<String>().isEqualTo("Please select at least three ingredients")

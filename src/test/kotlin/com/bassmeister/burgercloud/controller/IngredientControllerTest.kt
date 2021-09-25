@@ -11,10 +11,11 @@ class IngredientControllerTest(
     @Autowired val testClient: WebTestClient
 ) {
 
+    private val ingredients = "/ingredients"
 
     @Test
     fun `Load All Ingredients`() {
-        testClient.get().uri("/ingredients").exchange()
+        testClient.get().uri(ingredients).exchange()
             .expectStatus().isOk
             .expectBody().jsonPath("$").isArray
             .jsonPath("$").isNotEmpty
@@ -23,7 +24,7 @@ class IngredientControllerTest(
 
     @Test
     fun `Load Ingredient By Type`() {
-        testClient.get().uri("/ingredients?type=SAUCE").exchange().expectStatus().isOk
+        testClient.get().uri("$ingredients?type=SAUCE").exchange().expectStatus().isOk
             .expectBody().jsonPath("$.length()").isEqualTo(2)
             .jsonPath("$[0].name").isEqualTo("Ketchup")
             .jsonPath("$[1].name").isEqualTo("Mayonnaise")
@@ -31,13 +32,13 @@ class IngredientControllerTest(
 
     @Test
     fun `Get Single Ingredient`() {
-        testClient.get().uri("/ingredients/BAC").exchange().expectStatus().isOk.expectBody().jsonPath("$.name")
+        testClient.get().uri("$ingredients/BAC").exchange().expectStatus().isOk.expectBody().jsonPath("$.name")
             .isEqualTo("Bacon")
             .jsonPath("$.type").isEqualTo(IngredientType.OTHER.name)
     }
 
     @Test
     fun `Get Non Existing Ingredient`() {
-        testClient.get().uri("/ingredients/FOO").exchange().expectStatus().isNotFound
+        testClient.get().uri("$ingredients/FOO").exchange().expectStatus().isNotFound
     }
 }

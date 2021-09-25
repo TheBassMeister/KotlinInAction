@@ -7,12 +7,12 @@ import org.springframework.validation.Validator
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Mono
-import kotlin.reflect.jvm.internal.ReflectProperties
+import java.util.*
 
 // Inspired by https://www.baeldung.com/spring-functional-endpoints-validation
 abstract class AbstractValidationHandler<T> protected constructor(protected val validationClass: Class<T>) {
     @Autowired
-    private lateinit var validator:Validator
+    private lateinit var validator: Validator
 
     fun handleRequest(request: ServerRequest): Mono<ServerResponse> {
         return request.bodyToMono(validationClass)
@@ -20,7 +20,7 @@ abstract class AbstractValidationHandler<T> protected constructor(protected val 
                 val errors: Errors = BeanPropertyBindingResult(body, validationClass.name)
                 validator.validate(body!!, errors)
                 if (errors == null || !errors.hasErrors()) {
-                    processBody(body, request)
+                    postRequestHandler(body, request)
                 } else {
                     onValidationErrors(errors)
                 }
@@ -29,10 +29,10 @@ abstract class AbstractValidationHandler<T> protected constructor(protected val 
     }
 
     protected fun onValidationErrors(errors: Errors): Mono<ServerResponse> {
-        val errorMessages=StringBuilder()
-        errors.allErrors.forEach{errorMessages.append(it.defaultMessage)}
+        val errorMessages = StringJoiner(", ")
+        errors.allErrors.forEach { errorMessages.add(it.defaultMessage) }
         return ServerResponse.badRequest().bodyValue(errorMessages.toString())
     }
 
-    protected abstract fun processBody(body: T, request: ServerRequest): Mono<ServerResponse>
+    protected abstract fun postRequestHandler(body: T, request: ServerRequest): Mono<ServerResponse>
 }
