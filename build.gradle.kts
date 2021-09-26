@@ -17,9 +17,8 @@ repositories {
 }
 
 dependencies {
-	//implementation("org.springframework.boot:spring-boot-starter-hateoas")
+
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	//implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -37,8 +36,8 @@ dependencies {
 	implementation("junit:junit:4.12")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
+	testImplementation ("org.junit.jupiter:junit-jupiter:5.6.0")
+	testImplementation("org.junit.platform:junit-platform-runner:1.5.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")

@@ -17,11 +17,11 @@ data class Order(
     @field:Size(min = 1, message = "An Order must contain at least one burger")
     val burgers: List<BurgerOrder>,
     @JsonIgnore
-    var creditCardNumber: String = "",
+    var ccNumber: String = "",
     @JsonIgnore
-    val expDate: String = "",
+    val ccExpDate: String = "",
     @JsonIgnore
-    val ccExp: String = ""
+    val ccCVC: String = ""
 ) {
 
     @Id

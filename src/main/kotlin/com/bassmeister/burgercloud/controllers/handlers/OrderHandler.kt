@@ -53,7 +53,7 @@ class OrderHandler(
         }
         persistNewBurgers(order.burgers)
         val order =
-            Order(customer.get(), order.burgers, order.ccNumber, order.expDate, order.ccExp)
+            Order(customer.get(), order.burgers, order.ccNumber, order.ccExpDate, order.ccExp)
         val newOrder = orderRepo.save(order)
         return ServerResponse.created(URI.create("")).body(BodyInserters.fromValue(newOrder))
     }
