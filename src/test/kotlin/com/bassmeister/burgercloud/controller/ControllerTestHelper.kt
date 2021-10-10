@@ -5,10 +5,12 @@ import com.bassmeister.burgercloud.domain.Customer
 object ControllerTestHelper {
 
     fun createTestCustomer(): Customer {
-        val testCustomer= Customer("Test", "User",
+        val testCustomer = Customer(
+            "Test", "User",
             "211 Main Street", "FOO", "AZ",
-            "23421", "123-123-1234")
-        testCustomer.password="BurglarHam"
+            "23421", "123-123-1234"
+        )
+        testCustomer.pass = "BurglarHam"
         return testCustomer
     }
 

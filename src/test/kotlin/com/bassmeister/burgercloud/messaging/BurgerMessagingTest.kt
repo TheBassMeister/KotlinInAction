@@ -26,7 +26,7 @@ class BurgerMessagingTest(@Autowired val consumer:OrderListener, @Autowired val 
             val customer=order.customer
             assertEquals("Ham",customer.firstName)
             assertEquals("Burglar",customer.lastName)
-            assertEquals("Standard Burger",order.burger[0].burger.name)
+            assertEquals("Standard Burger",order.burgers[0].burger.name)
         }
 
     }

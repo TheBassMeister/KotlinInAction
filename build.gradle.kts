@@ -17,25 +17,29 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-hateoas")
+
 	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.kafka:spring-kafka")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-data-rest")
+	//TODO: Check If I still need this one
+	implementation("org.springframework.boot:spring-boot-starter-data-rest"){
+		exclude("org.springframework.boot","spring-boot-starter-web")
+	}
 	implementation("org.springframework.boot:spring-boot-starter-integration")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.integration:spring-integration-mail:5.4.3")
+	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive:2.5.5")
 	implementation("javax.mail:javax.mail-api:1.6.2")
 	implementation("com.sun.mail:javax.mail:1.6.2")
 	implementation("junit:junit:4.12")
 	runtimeOnly("com.h2database:h2")
 	runtimeOnly("org.springframework.boot:spring-boot-devtools")
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.1.1")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.1.1")
+	testImplementation ("org.junit.jupiter:junit-jupiter:5.6.0")
+	testImplementation("org.junit.platform:junit-platform-runner:1.5.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")

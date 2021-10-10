@@ -11,7 +11,7 @@ import org.springframework.integration.dsl.SourcePollingChannelAdapterSpec
 import java.util.concurrent.TimeUnit
 
 
-@Configuration
+//@Configuration
 class BurgerOrderEmailIntegration {
 
 

@@ -2,6 +2,6 @@ import { Ingredient } from '../model/Ingredient';
 
 export interface Burger{
   name: string;
-  isStandard?: boolean;
+  isStandardBurger?: boolean;
   ingredients?:Ingredient[];
 }

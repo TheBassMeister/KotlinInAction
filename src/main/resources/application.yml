@@ -1,13 +1,11 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:default
-  h2:
-    console:
-      enabled: true
-      path: /h2console/
   data:
     rest:
       base-path: /api
+    mongodb:
+      host: localhost
+      port: 27017
+      database: burgercloud
   kafka:
     consumer:
       auto-offset-reset: earliest
@@ -22,6 +20,8 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  webflux:
+    base-path: /api
 burgercloud:
   email:
     host: imap.abc.com

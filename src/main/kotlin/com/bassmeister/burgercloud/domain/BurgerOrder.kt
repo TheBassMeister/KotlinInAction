@@ -1,17 +1,15 @@
 package com.bassmeister.burgercloud.domain
 
-import javax.persistence.*
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
 
-@Entity
-@Table(name = "OrderedBurgers")
+@Document(collection = "OrderedBurgers")
 class BurgerOrder(
-    @OneToOne
-    @JoinColumn(name="burger_id")
+
     val burger: Burger,
     val amount:Int){
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id:Long=0L
+    val id:String=""
 }

@@ -1,28 +1,27 @@
 package com.bassmeister.burgercloud.domain
 
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import javax.persistence.*
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
-@Entity
+@Document
 data class Burger(
-    @field:NotEmpty(message="Your Burger must have a name")
-    val name:String,
-    @field:Size(min=3, message = "Please select at least three ingredients")
-    @ManyToMany(targetEntity = Ingredient::class, fetch = FetchType.EAGER) val ingredients:List<Ingredient>,
-    val isStandardBurger:Boolean
-    ){
+    @field:NotEmpty(message = "Your Burger must have a name")
+    val name: String,
+    @field:Size(min = 3, message = "Please select at least three ingredients")
+    val ingredients: List<Ingredient>,
+    val isStandardBurger: Boolean
+) {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id:Long=0L
+    var id: String = ""
 
-    var createdAt:LocalDateTime?=null
+    var createdAt: LocalDateTime? = null
 
-    @PrePersist
-    fun setCreatedAt(){
-       createdAt= LocalDateTime.now()
+    fun setCreatedAt() {
+        createdAt = LocalDateTime.now()
     }
 
 
