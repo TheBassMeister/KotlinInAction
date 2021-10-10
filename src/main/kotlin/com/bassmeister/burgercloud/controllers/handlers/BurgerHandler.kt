@@ -14,20 +14,20 @@ import java.net.URI
 class BurgerHandler(private val burgerRepo: BurgerRepo) : AbstractValidationHandler<Burger>(Burger::class.java) {
 
     override fun postRequestHandler(burger: Burger, request: ServerRequest): Mono<ServerResponse> {
-        val created = burgerRepo.save(burger) //TODO : Make this request non blocking (in next chapter)
-        return ServerResponse.created(URI.create("")).body(BodyInserters.fromValue(created))
+        val created = burgerRepo.save(burger)
+        return ServerResponse.created(URI.create("")).body(created, Burger::class.java)
     }
 
     fun getAllBurgers(): Mono<ServerResponse> {
-        return ServerResponse.ok().body(BodyInserters.fromValue(burgerRepo.findAll()))
+        return ServerResponse.ok().body(burgerRepo.findAll(), Burger::class.java)
     }
 
     fun getBurger(request: ServerRequest): Mono<ServerResponse> {
-        var burger = burgerRepo.findById(request.pathVariable("id").toLong())
-        if (burger.isPresent) {
-            return ServerResponse.ok().body(BodyInserters.fromValue(burger.get()))
-        }
-        return ServerResponse.notFound().build()
+        return burgerRepo.findById(request.pathVariable("id")).flatMap {
+            ServerResponse.ok().body(BodyInserters.fromValue(it))
+        }.switchIfEmpty(
+            ServerResponse.notFound().build()
+        )
     }
 }
 

@@ -1,6 +1,7 @@
 package com.bassmeister.burgercloud.controller
 
 import com.bassmeister.burgercloud.domain.Customer
+import net.minidev.json.JSONArray
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -79,19 +80,21 @@ class CustomerControllerTest(@Autowired val testClient: WebTestClient) {
 
     @Test
     fun `Update Existing Customer`() {
-        var id = 0
+        var id = ""
         val customer = ControllerTestHelper.createTestCustomer()
         testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
-            .body(Mono.just(customer), Customer::class.java).exchange().expectBody().jsonPath("$.id").value<Int> {
-                id = it
-            }
+            .body(Mono.just(customer), Customer::class.java).exchange();
+        testClient.get().uri(customers).exchange().expectBody().jsonPath("$").value<List<LinkedHashMap<String, String>>> {
+            id= it.last()["id"]!!
+        }
+
         customer.firstName = "Updated"
         customer.lastName = "Fooo"
         testClient.put().uri("$customers/$id").contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(customer), Customer::class.java).exchange().expectStatus().isOk
 
         testClient.get().uri("$customers?lastName=Fooo").exchange().expectStatus().isOk.expectBody().jsonPath("$[0].id")
-            .value<Int> {
+            .value<String> {
                 assertEquals(id, it)
             }.jsonPath("$[0].firstName").isEqualTo("Updated")
 
@@ -99,12 +102,14 @@ class CustomerControllerTest(@Autowired val testClient: WebTestClient) {
 
     @Test
     fun `Delete Customer`() {
-        var id = 0
+        var id = ""
         val customer = ControllerTestHelper.createTestCustomer()
         testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
-            .body(Mono.just(customer), Customer::class.java).exchange().expectBody().jsonPath("$.id").value<Int> {
-                id = it
-            }
+            .body(Mono.just(customer), Customer::class.java).exchange()
+
+        testClient.get().uri(customers).exchange().expectBody().jsonPath("$").value<List<LinkedHashMap<String, String>>> {
+            id= it.last()["id"]!!
+        }
 
         var countBeforeDelete = 0;
         testClient.get().uri(customers).exchange().expectBody().jsonPath("$.size()").value<Int> {
@@ -119,7 +124,12 @@ class CustomerControllerTest(@Autowired val testClient: WebTestClient) {
 
     @Test
     fun `Get Hamburglars Orders`(){
-        testClient.get().uri("$customers/orders/1").exchange().expectStatus().isOk
+        var id=""
+        testClient.get().uri(customers).exchange().expectBody().jsonPath("$[0]").value<LinkedHashMap<String, String>> {
+            id= it["id"]!!
+        }
+
+        testClient.get().uri("$customers/orders/$id").exchange().expectStatus().isOk
             .expectBody().jsonPath("$").isArray
             .jsonPath("$.size()").isEqualTo(1)
             .jsonPath("$[0].burgers").isArray

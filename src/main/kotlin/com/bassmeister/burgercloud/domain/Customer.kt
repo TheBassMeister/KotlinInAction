@@ -1,19 +1,18 @@
 package com.bassmeister.burgercloud.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
 import javax.validation.constraints.Digits
 import javax.validation.constraints.NotEmpty
 
-@Entity
+@Document
 data class Customer(
     @field:NotEmpty(message = "First Name must be set")
     var firstName: String = "",
@@ -35,10 +34,8 @@ data class Customer(
     @JsonIgnore
     val pwEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
-    @JsonIgnore
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0L
+    var id: String = ""
 
     @JsonIgnore
     var pass: String = ""

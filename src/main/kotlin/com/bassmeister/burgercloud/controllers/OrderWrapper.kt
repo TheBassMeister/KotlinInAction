@@ -11,7 +11,7 @@ import javax.validation.constraints.Size
 //Need to rethink if needed or just to change order model class
 data class OrderWrapper(
     @NotNull
-    val customerId: Long,
+    val customerId: String,
     @field:Size(min = 1, message = "An Order must contain at least one burger")
     val burgers: List<BurgerOrder>,
     @field:CreditCardNumber(message = "Not a valid credit card number")

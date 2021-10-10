@@ -1,6 +1,7 @@
 package com.bassmeister.burgercloud.controllers.handlers
 
 import com.bassmeister.burgercloud.data.IngredientRepo
+import com.bassmeister.burgercloud.domain.Ingredient
 import com.bassmeister.burgercloud.domain.IngredientType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
@@ -20,17 +21,18 @@ class IngredientHandler(private val ingredientRepo: IngredientRepo) {
                 "OTHER" -> IngredientType.OTHER
                 else -> IngredientType.BUN
             }
-            return ServerResponse.ok().body(BodyInserters.fromValue(ingredientRepo.getIngredientByType(ingredientType)))
+            return ServerResponse.ok().body(ingredientRepo.getIngredientByType(ingredientType), Ingredient::class.java)
         }
-        return ServerResponse.ok().body(BodyInserters.fromValue(ingredientRepo.findAll()))
+
+        return ServerResponse.ok().body(ingredientRepo.findAll(), Ingredient::class.java)
     }
 
     fun getIngredientById(request: ServerRequest):Mono<ServerResponse>{
-        var ingredient=ingredientRepo.findById(request.pathVariable("id"))
-        if(ingredient.isPresent){
-            return ServerResponse.ok().body(BodyInserters.fromValue(ingredient.get()))
-        }
-        return ServerResponse.notFound().build()
+        return ingredientRepo.findById(request.pathVariable("id")).flatMap {
+            ServerResponse.ok().body(BodyInserters.fromValue(it))
+        }.switchIfEmpty(
+            ServerResponse.notFound().build()
+        )
     }
 
 }

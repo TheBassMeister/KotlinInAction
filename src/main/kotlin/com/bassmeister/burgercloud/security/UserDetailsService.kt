@@ -10,10 +10,12 @@ import reactor.core.publisher.Mono
 class UserDetailsService(private val customerRepo: CustomerRepo) : ReactiveUserDetailsService {
 
     override fun findByUsername(username: String): Mono<UserDetails> {
-        val user = customerRepo.getUserByLastName(username)
-        if (user.isNotEmpty()) {
-            return Mono.just(user[0] as UserDetails)
-        }
-        return Mono.empty()
+        val user = customerRepo.getUserByLastName(username).next()
+        return user.map {
+            it as UserDetails
+        }.switchIfEmpty(
+            return Mono.empty()
+        )
+
     }
 }

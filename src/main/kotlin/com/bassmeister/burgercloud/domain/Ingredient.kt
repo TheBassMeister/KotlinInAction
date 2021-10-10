@@ -1,10 +1,10 @@
 package com.bassmeister.burgercloud.domain
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
-@Entity @Table(name="ingredient")
+
+@Document(collection = "ingredients")
 data class Ingredient(@Id var id:String, val name:String, val type:IngredientType)
 
 enum class IngredientType{

@@ -23,7 +23,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.springframework.kafka:spring-kafka")
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	//TODO: Check If I still need this one
 	implementation("org.springframework.boot:spring-boot-starter-data-rest"){
 		exclude("org.springframework.boot","spring-boot-starter-web")
 	}
@@ -31,6 +31,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.integration:spring-integration-mail:5.4.3")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive:2.5.5")
 	implementation("javax.mail:javax.mail-api:1.6.2")
 	implementation("com.sun.mail:javax.mail:1.6.2")
 	implementation("junit:junit:4.12")

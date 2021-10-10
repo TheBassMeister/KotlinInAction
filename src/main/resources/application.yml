@@ -1,14 +1,11 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:default
-    platform: h2
-  h2:
-    console:
-      enabled: true
-      path: /h2console/
   data:
     rest:
       base-path: /api
+    mongodb:
+      host: localhost
+      port: 27017
+      database: burgercloud
   kafka:
     consumer:
       auto-offset-reset: earliest

@@ -22,6 +22,12 @@ class DevelopmentConfig {
         orderRepo: OrderRepo, burgerOrderRepo: BurgerOrderRepo, pwEncoder: PasswordEncoder
     ): CommandLineRunner {
         return CommandLineRunner {
+            //As this is a test application repos get cleared (In Real world scenario this would be disabled in prod with spring profile
+            orderRepo.deleteAll().subscribe()
+            userRepo.deleteAll().subscribe()
+            burgerRepo.deleteAll().subscribe()
+            burgerOrderRepo.deleteAll().subscribe()
+
             val regBun = Ingredient("REG_BUN", "Regular Bun", IngredientType.BUN)
             val sesBun = Ingredient("SES_BUN", "Sesame Bun", IngredientType.BUN)
             val noGlut = Ingredient("NOGLUT", "Gluten free Bun", IngredientType.BUN)
@@ -37,7 +43,7 @@ class DevelopmentConfig {
                     regBun, sesBun, noGlut, ketchup, mayo, letc, toma, bacon,
                     pickles, cheese
                 )
-            )
+            ).subscribe()
 
             val burglar = Customer(
                 "Ham", "Burglar",
@@ -45,31 +51,36 @@ class DevelopmentConfig {
                 "76227", "123-123-1234"
             )
             burglar.pass = "BurglarHam"
+            burglar.id="1" //Would typically be auto generated, hardcoded at the moment while user part is not implemented atm
             val ronald = Customer(
                 "Ronald", "Donald",
                 "123 Milkshake Boulevard", "Royal TS", "TX",
                 "76227", "123-123-1234"
             )
             ronald.pass = "RonaldMcDonald"
-            userRepo.saveAll(listOf(burglar, ronald))
+            ronald.id="2"
+            userRepo.saveAll(listOf(burglar, ronald)).subscribe()
 
             val burger1Ingredients = listOf(regBun, mayo, cheese, pickles)
             val standardBurger = Burger("Standard Burger", burger1Ingredients, true);
-            burgerRepo.save(standardBurger)
+            burgerRepo.save(standardBurger).subscribe()
 
             val burger2Ingredients = listOf(sesBun, ketchup, mayo, letc, bacon, pickles, cheese);
 
             val standardBurger2 = Burger("The One with everything", burger2Ingredients, true);
-            burgerRepo.save(standardBurger2)
+            burgerRepo.save(standardBurger2).subscribe()
 
             val burgerOrder = BurgerOrder(standardBurger, 2)
-            burgerOrderRepo.save(burgerOrder)
+            burgerOrderRepo.save(burgerOrder).subscribe()
             val burgerOrder2 = BurgerOrder(standardBurger2, 3)
-            burgerOrderRepo.save(burgerOrder2)
+            burgerOrderRepo.save(burgerOrder2).subscribe()
 
             val burgerOrders = listOf(burgerOrder, burgerOrder2)
 
-            orderRepo.save(Order(burglar, burgerOrders, "378618187748325", "03/22", "350"))
+            val burglarWithId=userRepo.getUserByLastName("Burglar").blockFirst()
+            burglarWithId?.let {
+                orderRepo.save(Order(burglarWithId, burgerOrders, "378618187748325", "03/22", "350")).subscribe()
+            }
 
         }
     }

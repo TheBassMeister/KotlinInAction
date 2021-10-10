@@ -26,8 +26,8 @@ class IngredientControllerTest(
     fun `Load Ingredient By Type`() {
         testClient.get().uri("$ingredients?type=SAUCE").exchange().expectStatus().isOk
             .expectBody().jsonPath("$.length()").isEqualTo(2)
-            .jsonPath("$[0].name").isEqualTo("Ketchup")
-            .jsonPath("$[1].name").isEqualTo("Mayonnaise")
+            .jsonPath("$[0].name").isEqualTo("Mayonnaise")
+            .jsonPath("$[1].name").isEqualTo("Ketchup")
     }
 
     @Test

@@ -1,19 +1,14 @@
 package com.bassmeister.burgercloud.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDateTime
-import javax.persistence.*
 import javax.validation.constraints.Size
 
-@Entity
-@Table(name = "Burger_Order")
+@Document(collection = "Burger_Order")
 data class Order(
-    @ManyToOne @OnDelete(action = OnDeleteAction.CASCADE)
     val customer: Customer,
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "order_id")
     @field:Size(min = 1, message = "An Order must contain at least one burger")
     val burgers: List<BurgerOrder>,
     @JsonIgnore
@@ -25,12 +20,10 @@ data class Order(
 ) {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = 0L
+    var id: String = ""
 
     var placedAt: LocalDateTime? = null
 
-    @PrePersist
     fun setCreatedAt() {
         placedAt = LocalDateTime.now()
     }

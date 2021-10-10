@@ -3,6 +3,8 @@ package com.bassmeister.burgercloud.handler
 import com.bassmeister.burgercloud.domain.IngredientType
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.*
 
 
@@ -13,7 +15,7 @@ class IngredientHandlerTest : HandlerTests() {
 
     @Test
     fun `Load All Ingredients`() {
-        Mockito.`when`(ingredientRepo.findAll()).thenReturn(ingredients)
+        Mockito.`when`(ingredientRepo.findAll()).thenReturn(Flux.fromIterable(ingredients))
 
         testClient.get().uri(ingredientPath).exchange()
             .expectStatus().isOk
@@ -24,7 +26,7 @@ class IngredientHandlerTest : HandlerTests() {
 
     @Test
     fun `Load Ingredient By Type`() {
-        Mockito.`when`(ingredientRepo.getIngredientByType(IngredientType.SAUCE)).thenReturn(listOf(ketchup, mayo))
+        Mockito.`when`(ingredientRepo.getIngredientByType(IngredientType.SAUCE)).thenReturn(Flux.just(ketchup, mayo))
 
         testClient.get().uri("$ingredientPath?type=SAUCE").exchange().expectStatus().isOk
             .expectBody().jsonPath("$.length()").isEqualTo(2)
@@ -34,7 +36,7 @@ class IngredientHandlerTest : HandlerTests() {
 
     @Test
     fun `Get Single Ingredient`() {
-        Mockito.`when`(ingredientRepo.findById("BAC")).thenReturn(Optional.of(bacon))
+        Mockito.`when`(ingredientRepo.findById("BAC")).thenReturn(Mono.just(bacon))
 
         testClient.get().uri("$ingredientPath/BAC").exchange().expectStatus().isOk.expectBody().jsonPath("$.name")
             .isEqualTo("Bacon")
@@ -43,7 +45,7 @@ class IngredientHandlerTest : HandlerTests() {
 
     @Test
     fun `Get Non Existing Ingredient`() {
-        Mockito.`when`(ingredientRepo.findById("FOO")).thenReturn(Optional.empty())
+        Mockito.`when`(ingredientRepo.findById("FOO")).thenReturn(Mono.empty())
         testClient.get().uri("$ingredientPath/FOO").exchange().expectStatus().isNotFound
     }
 

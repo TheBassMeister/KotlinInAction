@@ -6,6 +6,7 @@ import com.bassmeister.burgercloud.data.OrderRepo
 import com.bassmeister.burgercloud.domain.Order
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 import java.util.concurrent.CountDownLatch
 
 @Component
@@ -16,9 +17,10 @@ class OrderListener(val orderRepo: OrderRepo, val customerRepo: CustomerRepo, va
     @KafkaListener(topics=["burger.orders"])
     fun handle(order: Order){
         //Could have been handled by hibernate, need to refresh my hibernate logic
-        if(!customerRepo.findById(order.customer.id).isPresent){
-            customerRepo.save(order.customer)
-        }
+        //TODO: NEED TO CHECK AFTER DB CHANGE
+//        if(!customerRepo.findById(Mono.just(order.id)).isPresent){
+//            customerRepo.save(order.customer)
+//        }
         order.burgers.forEach{ burgerRepo.save(it.burger)};
 
         orderRepo.save(order)

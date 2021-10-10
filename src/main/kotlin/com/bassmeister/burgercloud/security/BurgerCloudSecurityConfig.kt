@@ -20,7 +20,7 @@ class BurgerCloudSecurityConfig {
     @Bean
     fun securityWebFilterChain(http: ServerHttpSecurity): SecurityWebFilterChain {
         return http.authorizeExchange()
-            .pathMatchers("/customers/**", "/orders/**").hasAuthority("ROLE_USER")
+            //.pathMatchers("/customers/**", "/orders/**").hasAuthority("ROLE_USER")
             .anyExchange().permitAll().and().formLogin().and().csrf().disable().build()
     }
 

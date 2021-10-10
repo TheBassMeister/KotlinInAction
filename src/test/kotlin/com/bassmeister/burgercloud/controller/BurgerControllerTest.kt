@@ -26,14 +26,7 @@ class BurgerControllerTest(@Autowired val ingredientRepo: IngredientRepo, @Autow
             .jsonPath("$[1].name").isEqualTo("The One with everything")
     }
 
-    @Test
-    fun `Get Burger`() {
-        testClient.get().uri("$burgers/3").exchange()
-            .expectStatus().isOk
-            .expectBody().jsonPath("$.name").isEqualTo("Standard Burger")
-            .jsonPath("$.ingredients").isArray
-            .jsonPath("$.ingredients.length()").isEqualTo(4)
-    }
+    //Get Burger Test removed as the id is now randomly generated, will be tested in handler Test
 
     @Test
     fun `Add Burger`() {
@@ -65,19 +58,19 @@ class BurgerControllerTest(@Autowired val ingredientRepo: IngredientRepo, @Autow
 
 
     private fun createNewBurger(): Burger {
-        val bun = ingredientRepo.findById("SES_BUN").get()
-        val sauce = ingredientRepo.findById("KETCHUP").get()
-        val extra = ingredientRepo.findById("TOMA").get()
-        val extra2 = ingredientRepo.findById("BAC").get()
+        val bun = ingredientRepo.findById("SES_BUN").block()
+        val sauce = ingredientRepo.findById("KETCHUP").block()
+        val extra = ingredientRepo.findById("TOMA").block()
+        val extra2 = ingredientRepo.findById("BAC").block()
         val burger1Ingredients = listOf(bun, sauce, extra, extra2)
-        return Burger("BACON MASTER", burger1Ingredients, false)
+        return Burger("BACON MASTER", burger1Ingredients.filterNotNull(), false)
     }
 
     private fun createBurgerWithNotEnoughIngredients(): Burger {
-        val bun = ingredientRepo.findById("SES_BUN").get()
-        val sauce = ingredientRepo.findById("KETCHUP").get()
+        val bun = ingredientRepo.findById("SES_BUN").block()
+        val sauce = ingredientRepo.findById("KETCHUP").block()
         val burger1Ingredients = listOf(bun, sauce)
-        return Burger("Not Enough Ingredients Burger", burger1Ingredients, false)
+        return Burger("Not Enough Ingredients Burger", burger1Ingredients.filterNotNull(), false)
     }
 
 }

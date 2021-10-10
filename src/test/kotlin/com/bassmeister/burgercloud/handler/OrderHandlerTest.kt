@@ -3,16 +3,19 @@ package com.bassmeister.burgercloud.handler
 import com.bassmeister.burgercloud.controller.ControllerTestHelper
 import com.bassmeister.burgercloud.controllers.OrderWrapper
 import com.bassmeister.burgercloud.controllers.handlers.CANNOT_CREATE_NEW_CUSTOMER
+import com.bassmeister.burgercloud.domain.Burger
 import com.bassmeister.burgercloud.domain.BurgerOrder
+import com.bassmeister.burgercloud.domain.Customer
 import com.bassmeister.burgercloud.domain.Order
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito
 import org.springframework.http.MediaType
 import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.reactive.server.expectBody
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -22,7 +25,7 @@ class OrderHandlerTest : HandlerTests() {
 
     @Test
     fun `Get All Orders`() {
-        Mockito.`when`(orderRepo.findAll()).thenReturn(listOf(testOrder))
+        Mockito.`when`(orderRepo.findAll()).thenReturn(Flux.fromIterable(listOf(testOrder)))
 
         testClient.get().uri(orders).exchange()
             .expectStatus().isOk
@@ -36,8 +39,12 @@ class OrderHandlerTest : HandlerTests() {
         setupPostTests()
         val order = createTestOrder()
         val orderWrapper = transformToWrapper(order)
-        Mockito.`when`(orderRepo.findAll()).thenReturn(listOf(testOrder, order))
-        Mockito.`when`(customerRepo.findById(1)).thenReturn(Optional.of(customerOne))
+        Mockito.`when`(customerRepo.findById(anyString())).thenReturn(Mono.just(customerOne))
+        Mockito.`when`(orderRepo.save(any(Order::class.java))).thenAnswer { Mono.just(it.arguments[0]) }
+        Mockito.`when`(burgerRepo.findByName(burgerOne.name)).thenReturn(Mono.just(burgerOne))
+
+        Mockito.`when`(burgerRepo.save(any(Burger::class.java))).thenAnswer { Mono.just(it.arguments[0]) }
+        Mockito.`when`(burgerOrderRepo.save(any(BurgerOrder::class.java))).thenAnswer { Mono.just(it.arguments[0]) }
 
         testClient.post().uri(orders).contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(orderWrapper), OrderWrapper::class.java::class.java).exchange()
@@ -48,7 +55,8 @@ class OrderHandlerTest : HandlerTests() {
     @Test
     fun `Create Order with non existing customer`() {
         setupPostTests()
-        Mockito.`when`(customerRepo.findById(anyLong())).thenReturn(Optional.empty())
+
+        Mockito.`when`(customerRepo.findById(anyString())).thenReturn(Mono.empty())
 
         val newCustomer = ControllerTestHelper.createTestCustomer()
         val order = OrderWrapper(newCustomer.id, listOf(BurgerOrder(burgerOne, 3)), "347123743137749", "07/23", "341")
@@ -73,10 +81,15 @@ class OrderHandlerTest : HandlerTests() {
     @Test
     fun `Cancel Order`() {
         setupPostTests()
-        val order = transformToWrapper(createTestOrder())
+        val order =createTestOrder()
+        val orderW = transformToWrapper(createTestOrder())
+
+        Mockito.`when`(orderRepo.findById(anyString())).thenReturn(Mono.just(order))
+        Mockito.`when`(orderRepo.delete(any(Order::class.java))).thenReturn(Mono.empty())
+        Mockito.`when`(customerRepo.findById(anyString())).thenReturn(Mono.just(customerOne))
 
         testClient.post().uri(orders).contentType(MediaType.APPLICATION_JSON)
-            .body(Mono.just(order), OrderWrapper::class.java::class.java).exchange()
+            .body(Mono.just(orderW), OrderWrapper::class.java::class.java).exchange()
 
         testClient.delete().uri("$orders/1").exchange().expectStatus().isOk
 
@@ -92,6 +105,6 @@ class OrderHandlerTest : HandlerTests() {
     }
 
     private fun transformToWrapper(order: Order): OrderWrapper {
-        return OrderWrapper(1, order.burgers, order.ccNumber, order.ccExpDate, order.ccCVC)
+        return OrderWrapper("1", order.burgers, order.ccNumber, order.ccExpDate, order.ccCVC)
     }
 }

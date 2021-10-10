@@ -4,9 +4,11 @@ import com.bassmeister.burgercloud.domain.Burger
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.springframework.http.MediaType
 import org.springframework.test.util.ReflectionTestUtils
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -19,7 +21,7 @@ class BurgerHandlerTest : HandlerTests() {
 
     @Test
     fun `Get All Burgers`() {
-        Mockito.`when`(burgerRepo.findAll()).thenReturn(listOf(burgerOne, burgerTwo))
+        Mockito.`when`(burgerRepo.findAll()).thenReturn(Flux.just(burgerOne, burgerTwo))
 
         testClient.get().uri(burgers).exchange()
             .expectStatus().isOk
@@ -31,7 +33,7 @@ class BurgerHandlerTest : HandlerTests() {
 
     @Test
     fun `Get Burger`() {
-        Mockito.`when`(burgerRepo.findById(3)).thenReturn(Optional.of(burgerOne))
+        Mockito.`when`(burgerRepo.findById(anyString())).thenReturn(Mono.just(burgerOne))
 
         testClient.get().uri("$burgers/3").exchange()
             .expectStatus().isOk
@@ -46,9 +48,9 @@ class BurgerHandlerTest : HandlerTests() {
 
         val burger = createNewBurger()
 
-        Mockito.`when`(burgerRepo.findAll()).thenReturn(listOf(burgerOne, burgerTwo))
-            .thenReturn(listOf(burgerOne, burgerTwo, burger))
-        Mockito.`when`(burgerRepo.save(any(Burger::class.java))).thenAnswer { it.arguments[0] }
+        Mockito.`when`(burgerRepo.findAll()).thenReturn(Flux.just(burgerOne, burgerTwo))
+            .thenReturn(Flux.just(burgerOne, burgerTwo, burger))
+        Mockito.`when`(burgerRepo.save(any(Burger::class.java))).thenAnswer { Mono.just(it.arguments[0]) }
 
         var countBefore = 0;
         testClient.get().uri(burgers).exchange().expectBody().jsonPath("$.size()").value<Int> {

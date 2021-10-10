@@ -1,6 +1,7 @@
 package com.bassmeister.burgercloud.handler
 
 import com.bassmeister.burgercloud.controller.ControllerTestHelper
+import com.bassmeister.burgercloud.domain.Burger
 import com.bassmeister.burgercloud.domain.BurgerOrder
 import com.bassmeister.burgercloud.domain.Customer
 import com.bassmeister.burgercloud.domain.Order
@@ -9,14 +10,15 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
 import org.springframework.http.MediaType
 import org.springframework.test.util.ReflectionTestUtils
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
 class CustomerHandlerTest : HandlerTests() {
-
 
     private val customers = "/customers"
 
@@ -24,7 +26,7 @@ class CustomerHandlerTest : HandlerTests() {
 
     @Test
     fun `Load All Users`() {
-        Mockito.`when`(customerRepo.findAll()).thenReturn(listOf(customerOne, customer2))
+        Mockito.`when`(customerRepo.findAll()).thenReturn(Flux.just(customerOne, customer2))
 
         testClient.get().uri(customers).exchange().expectStatus().isOk
             .expectBody().jsonPath("$").isArray
@@ -34,7 +36,7 @@ class CustomerHandlerTest : HandlerTests() {
 
     @Test
     fun `Load Hamburglar`() {
-        Mockito.`when`(customerRepo.getUserByLastName("Burglar")).thenReturn(listOf(customerOne))
+        Mockito.`when`(customerRepo.getUserByLastName("Burglar")).thenReturn(Flux.just(customerOne))
 
         testClient.get().uri("$customers?lastName=Burglar").exchange().expectStatus().isOk
             .expectBody().jsonPath("$").isArray
@@ -49,8 +51,8 @@ class CustomerHandlerTest : HandlerTests() {
 
         val customer = ControllerTestHelper.createTestCustomer()
 
-        Mockito.`when`(customerRepo.findAll()).thenReturn(listOf(customerOne, customer2))
-            .thenReturn(listOf(customerOne, customer2, customer))
+        Mockito.`when`(customerRepo.findAll()).thenReturn(Flux.just(customerOne, customer2))
+            .thenReturn(Flux.just(customerOne, customer2, customer))
 
         var countBefore = 0;
         testClient.get().uri(customers).exchange().expectBody().jsonPath("$.size()").value<Int> {
@@ -88,7 +90,7 @@ class CustomerHandlerTest : HandlerTests() {
         setupPostTests()
         val customer = ControllerTestHelper.createTestCustomer()
 
-        Mockito.`when`(customerRepo.findById(3)).thenReturn(Optional.of(customer))
+        Mockito.`when`(customerRepo.findById(anyString())).thenReturn(Mono.just(customer))
 
         testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(customer), Customer::class.java).exchange()
@@ -98,7 +100,7 @@ class CustomerHandlerTest : HandlerTests() {
         testClient.put().uri("$customers/3").contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(customer), Customer::class.java).exchange().expectStatus().isOk
 
-        Mockito.`when`(customerRepo.getUserByLastName("Fooo")).thenReturn(listOf(customer))
+        Mockito.`when`(customerRepo.getUserByLastName("Fooo")).thenReturn(Flux.just(customer))
 
         testClient.get().uri("$customers?lastName=Fooo").exchange().expectStatus().isOk.expectBody()
             .jsonPath("$[0].firstName").isEqualTo("Updated")
@@ -110,6 +112,9 @@ class CustomerHandlerTest : HandlerTests() {
         setupPostTests()
         val customer = ControllerTestHelper.createTestCustomer()
 
+        Mockito.`when`(customerRepo.findById(anyString())).thenReturn(Mono.just(customer))
+        Mockito.`when`(customerRepo.delete(ArgumentMatchers.any(Customer::class.java))).thenReturn(Mono.empty())
+
         testClient.post().uri(customers).contentType(MediaType.APPLICATION_JSON)
             .body(Mono.just(customer), Customer::class.java).exchange()
 
@@ -118,10 +123,10 @@ class CustomerHandlerTest : HandlerTests() {
 
     @Test
     fun `Get Hamburglars Orders`(){
-        customerOne.id=1L
+        customerOne.id="1"
         val orderWithId=Order(customerOne, listOf(BurgerOrder(burgerOne, 3)),"378618187748325", "10/23", "221" )
 
-        Mockito.`when`(orderRepo.findAll()).thenReturn(listOf(orderWithId))
+        Mockito.`when`(orderRepo.findAll()).thenReturn(Flux.just(orderWithId))
 
 
         testClient.get().uri("$customers/orders/1").exchange().expectStatus().isOk
@@ -134,6 +139,6 @@ class CustomerHandlerTest : HandlerTests() {
 
     private fun setupPostTests() {
         ReflectionTestUtils.setField(customerHandler, "validator", validator)
-        Mockito.`when`(customerRepo.save(ArgumentMatchers.any(Customer::class.java))).thenAnswer { it.arguments[0] }
+        Mockito.`when`(customerRepo.save(ArgumentMatchers.any(Customer::class.java))).thenAnswer { Mono.just(it.arguments[0]) }
     }
 }
